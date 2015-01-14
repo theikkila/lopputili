@@ -12,11 +12,15 @@ run: venv
 	. .venv/bin/activate; honcho start
 
 docs: doc/toc cleardocs
+	@cat doc/toc |xargs -I '{}' cat doc/'{}' > doc/generated/documentation.md
+	@echo "Markdown docs generated to doc/generated/documentation.md"
 	@cat doc/toc |xargs -I '{}' cat doc/'{}' | python -c 'import httplib, urllib; import json, sys; params = urllib.urlencode({"source": sys.stdin.read()});headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "application/json"};conn = httplib.HTTPConnection("aurelius.eapp.fi");conn.request("POST", "/generate", params, headers);response = conn.getresponse();obj=json.load(response);print obj["file"]' | xargs -I '{}' curl -s --retry 5 --retry-delay 1 -o doc/generated/$(datet).pdf http://aurelius.eapp.fi/'{}'.pdf
-	@echo "Docs generated to doc/generated/$(datet).pdf"
+	@echo "PDF docs generated to doc/generated/$(datet).pdf"
 
 cleardocs:
 	rm doc/generated/*.pdf || true
+	rm doc/generated/*.md || true
+
 
 clear: cleardocs
 	rm -rf .venv
