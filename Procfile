@@ -1,0 +1,1 @@
+web: gunicorn lopputili:app --log-file -
