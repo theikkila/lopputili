@@ -1,2 +1,3 @@
 # lopputili
-Lopputili on kirjanpitoon ja laskutukseen tarkoitettu ohjelmisto.
+
+Lopputili on kirjanpitoon ja laskutukseen tarkoitettu sovellus.
