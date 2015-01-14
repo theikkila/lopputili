@@ -7,3 +7,4 @@
 - Seuraa laskujen maksamista
 - Tulostaa raportteja laskuista
 - Tulostaa raportteja kirjanpidosta
+

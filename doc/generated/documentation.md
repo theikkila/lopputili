@@ -4,7 +4,8 @@ Sovellus käyttää Flask-mikroframeworkkiä ja on ohjelmoitu käyttäen Python-
 
 Sovellus käyttää tietokantanaan *PostgreSQL*-tietokantaa ja kehittäessä kantana on *SQLite*.
 
-Sovellus on pystytetty [tänne](http://lopputili.viski.me/)# Käyttö
+Sovellus on pystytetty [tänne](http://lopputili.viski.me/)
+# Käyttö
 
 Sovelluksen voi käynnistää komennolla `make run` jolloin tarvittavat riippuvuudet ladataan automaattisesti ja käynnistetään wsgi-palvelin.
 
@@ -20,3 +21,6 @@ Dokumentaatio generoidaan komennolla `make docs` jonka jälkeen `doc/generated`-
 - Seuraa laskujen maksamista
 - Tulostaa raportteja laskuista
 - Tulostaa raportteja kirjanpidosta
+
+# PDF
+PDF-muotoinen dokumentaatio ladattavissa [@ Github](https://github.com/theikkila/lopputili/blob/master/doc/generated/documentation.pdf?raw=true)
