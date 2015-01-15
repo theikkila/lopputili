@@ -1,6 +1,7 @@
 
 data_types_sqlite = {
     'AutoField': 'integer',
+    'PKField': 'integer primary key',
     'BinaryField': 'BLOB',
     'BooleanField': 'bool',
     'CharField': 'varchar(%(max_length)s)',
@@ -40,6 +41,7 @@ operators_sqlite = {
 
 data_types_postgres = {
     'AutoField': 'serial',
+    'PKField': 'serial',
     'BinaryField': 'bytea',
     'BooleanField': 'boolean',
     'CharField': 'varchar(%(max_length)s)',

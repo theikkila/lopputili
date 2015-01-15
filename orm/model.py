@@ -39,15 +39,20 @@ class BaseModel:
 	__metaclass__ = ModelMeta
 	db = None
 	conn = None
-	pk = fields.AutoField()
+	pk = fields.PKField()
 	def __init__(self, insert=True):
-		self.pk = fields.AutoField()
+		self.pk = fields.PKField()
 		self.insert = insert
 
 	def serialize(self):
 		d = {}
-		for field in self.getfields():
-			d[field] = getattr(self, field)
+		for field_name in self.getfields():
+			field = getattr(self, '_'+field_name)
+			if not field.isvalid():
+				print "Error @", field_name
+				raise exceptions.FieldNotValidError(field_name)
+			d[field_name] = field.get()
+		return d
 
 	@classmethod
 	def deserialize(model, row):
@@ -59,18 +64,25 @@ class BaseModel:
 	def save(self):
 		dbset(self)
 		serialized = self.serialize()
+		#print serialized
+		del serialized['pk']
 		keys = ', '.join(serialized.keys())
+		updatepairs = ', '.join(map(lambda key: key+" = ?", serialized.keys()))
 		qmarks = ', '.join('?' * len(serialized))
 		cursor = self.conn.cursor()
 		if self.insert:
 			query = "INSERT INTO %s (%s) VALUES (%s)" % (self.tableName(), keys, qmarks)
 			#print query, serialized.values(), self.pk
-			cursor.execute(query, serialized.values())
+			self.insert = False
+			res = cursor.execute(query, serialized.values())
 		else:
-			query = "UPDATE %s SET (%s) VALUES (%s) WHERE pk = ?" % (qmarks, qmarks)
+			query = "UPDATE %s SET %s WHERE pk = ?" % (self.tableName(), updatepairs)
 			#print query
-			cursor.execute(query, serialized.keys()+serialized.values(), self.pk)
+			res = cursor.execute(query, serialized.values()+[self.pk])
 		self.conn.commit()
+		if cursor.lastrowid != None:
+			self.pk = cursor.lastrowid
+		#print "PK", self.pk
 
 	@classmethod
 	def all(model):
@@ -127,5 +139,6 @@ class BaseModel:
 
 
 class Model(BaseModel):
-	updated = fields.DateTimeField()
-	created = fields.DateTimeField()
+	#updated = fields.DateTimeField()
+	#created = fields.DateTimeField()
+	pass

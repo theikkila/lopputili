@@ -12,7 +12,15 @@ class Field(object):
 	def set(self, value):
 		self.value = value
 
-class AutoField(Field):
+	def isvalid(self):
+		if not self.blank and self.value is None:
+			return False
+		return True
+
+	def __repr__(self):
+		return str(self.value)
+
+class PKField(Field):
 	name = "PrimaryKey"
 
 class DateTimeField(Field):
