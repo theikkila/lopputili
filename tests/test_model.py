@@ -26,6 +26,9 @@ class modelTest(unittest.TestCase):
 		if os.path.isfile(testDBpath):
 			os.remove(testDBpath)
 
+	def test_tablename(self):
+		self.assertEquals(User.tableName(), 'users')
+
 	def test_getfields(self):
 		self.assertEquals(User.getfields(), ['created', 'first_name', 'last_name', 'password', 'pk', 'updated', 'username'])
 
