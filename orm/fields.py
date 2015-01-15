@@ -1,8 +1,9 @@
 
 
 class Field(object):
-	def __init__(self):
+	def __init__(self, blank=False):
 		self.meta = {}
+		self.blank = blank
 
 class AutoField(Field):
 	name = "PrimaryKey"
@@ -12,8 +13,8 @@ class DateTimeField(Field):
 
 class CharField(Field):
 	name = "String"
-	def __init__(self, max_length=30):
-		super(CharField, self).__init__()
+	def __init__(self, max_length=30, blank=False):
+		super(CharField, self).__init__(blank=blank)
 		self.meta['max_length'] = max_length
 
 

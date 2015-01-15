@@ -1,7 +1,7 @@
 import os
 import urlparse
-import querybuilder
-
+import sqlite3
+import psycopg2
 
 urlparse.uses_netloc.append("postgres")
 urlparse.uses_netloc.append("sqlite")
@@ -11,9 +11,7 @@ class ORM:
 		self.models = []
 		self.dburi = urlparse.urlparse(os.getenv('DATABASE_URL', "sqlite://local.db"))
 		self.db = self.dburi.scheme
-
 		if self.db == "postgres":
-			import psycopg2
 			self.conn = psycopg2.connect(
 						    database=url.path[1:],
 							user=url.username,
@@ -23,17 +21,18 @@ class ORM:
 						)
 			self.c = self.conn.cursor()
 		else:
-			import sqlite3
+			self.db = "sqlite"
 			self.conn = sqlite3.connect(self.dburi.netloc)
 			self.c = self.conn.cursor()
 
 	def registerModel(self, model):
+		model.setDB(self.db, self.c)
 		self.models.append(model)
 
 	def initTables(self):
-		try:
-			for model in self.models:
-				self.c.execute(querybuilder.createTable(self.db, model))
-		except:
-			return False
+		for model in self.models:
+			try:
+				model.createTables()
+			except sqlite3.OperationalError:
+				return False
 		return True
