@@ -10,11 +10,13 @@ class BaseModel:
 		pass
 	def deserialize(self):
 		pass
-	def tableName(self):
-		if hasattr(self, "table"):
-			return self.table
+
+	@classmethod
+	def tableName(cls):
+		if hasattr(cls, "table"):
+			return cls.table
 		else:
-			return self.__class__.__name__.lower()+"s"
+			return cls.__name__.lower()+"s"
 
 class Model(BaseModel):
 	pk = fields.AutoField()
