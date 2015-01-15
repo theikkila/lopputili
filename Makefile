@@ -26,5 +26,5 @@ cleardocs:
 clear: cleardocs
 	rm -rf .venv
 	
-test: tests/orm_test.py
-	PYTHONPATH=. DATABASE_URL=sqlite://test.db python tests/orm_test.py
+test:
+	@PYTHONPATH=. DATABASE_URL=sqlite://test.db python -m unittest discover tests/

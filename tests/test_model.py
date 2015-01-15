@@ -2,41 +2,35 @@ import unittest
 import os
 
 from orm import ORM
-
-from orm import models
+from orm import model
 from orm import fields
 
-class User(models.Model):
+
+class User(model.Model):
 	first_name = fields.CharField(max_length=40, blank=True)
 	last_name = fields.CharField(max_length=40, blank=True)
 	username = fields.CharField(max_length=40)
 	password = fields.CharField(max_length=40)
 
-
 testDBpath = "test.db"
 
-class ormTest(unittest.TestCase):
+class modelTest(unittest.TestCase):
+
 	def setUp(self):
 		if os.path.isfile(testDBpath):
 			os.remove(testDBpath)
 		self.o = ORM()
+		self.o.registerModel(User)
 
 	def tearDown(self):
 		if os.path.isfile(testDBpath):
 			os.remove(testDBpath)
 
-	def testCreateDB(self):
-		self.assertTrue(os.path.isfile(testDBpath))
+	def test_getfields(self):
+		self.assertEquals(User.getfields(), ['created', 'first_name', 'last_name', 'password', 'pk', 'updated', 'username'])
 
-	def testOrmInit(self):
-		self.assertEqual(self.o.db, "sqlite")
-
-	def testRegisterModel(self):
-		self.o.registerModel(User)
-		self.assertEqual(len(self.o.models), 1)
-		self.assertTrue(self.o.initTables())
-		print self.o.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
-
+	def test_modelSQL(self):
+		self.assertEquals(User.createTableSQL(), "CREATE TABLE users (created datetime, first_name varchar(40), last_name varchar(40), password varchar(40), pk integer, updated datetime, username varchar(40))")
 
 if __name__ == '__main__':
     unittest.main()
