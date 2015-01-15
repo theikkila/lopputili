@@ -4,6 +4,13 @@ class Field(object):
 	def __init__(self, blank=False):
 		self.meta = {}
 		self.blank = blank
+		self.value = None
+
+	def get(self):
+		return self.value
+
+	def set(self, value):
+		self.value = value
 
 class AutoField(Field):
 	name = "PrimaryKey"

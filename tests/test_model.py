@@ -33,7 +33,7 @@ class modelTest(unittest.TestCase):
 		self.assertEquals(User.tableName(), 'users')
 
 	def test_getfields(self):
-		self.assertEquals(User.getfields(), ['created', 'first_name', 'last_name', 'password', 'pk', 'updated', 'username'])
+		self.assertEquals(set(User.getfields()), set(['created', 'first_name', 'last_name', 'password', 'pk', 'updated', 'username']))
 
 	def test_modelSQL(self):
 		self.assertEquals(User.createTableSQL(), "CREATE TABLE users (created datetime, first_name varchar(40), last_name varchar(40), password varchar(40), pk integer, updated datetime, username varchar(40))")

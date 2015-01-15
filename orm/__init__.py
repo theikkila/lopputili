@@ -13,7 +13,7 @@ class ORM:
 		self.db = self.dburi.scheme
 		if self.db == "postgres":
 			self.conn = psycopg2.connect(
-						    database=url.path[1:],
+							database=url.path[1:],
 							user=url.username,
 							password=url.password,
 							host=url.hostname,
@@ -23,10 +23,16 @@ class ORM:
 		else:
 			self.db = "sqlite"
 			self.conn = sqlite3.connect(self.dburi.netloc)
+			def dict_factory(cursor, row):
+				d = {}
+				for idx, col in enumerate(cursor.description):
+					d[col[0]] = row[idx]
+				return d
+			self.conn.row_factory = dict_factory
 			self.c = self.conn.cursor()
 
 	def registerModel(self, model):
-		model.setDB(self.db, self.c)
+		model.setDB(self.db, self.conn)
 		self.models.append(model)
 
 	def initTables(self):

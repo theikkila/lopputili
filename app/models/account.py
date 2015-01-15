@@ -6,3 +6,6 @@ class Account(models.Model):
 	aid = fields.IntegerField()
 	description = fields.CharField(max_length=400, blank=True)
 	side = fields.CharField(max_length=13)
+
+	def __repr__(self):
+		return str(self.aid)+": "+self.name
