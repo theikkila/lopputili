@@ -45,7 +45,9 @@ class BaseModel:
 		self.insert = insert
 
 	def serialize(self):
-		return {"pk": 1, "name": "Joku", "aid": 13, "description": "Things....", "side": "west"}
+		d = {}
+		for field in self.getfields():
+			d[field] = getattr(self, field)
 
 	@classmethod
 	def deserialize(model, row):
