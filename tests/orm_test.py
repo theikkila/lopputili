@@ -35,6 +35,7 @@ class ormTest(unittest.TestCase):
 		self.o.registerModel(User)
 		self.assertEqual(len(self.o.models), 1)
 		self.assertTrue(self.o.initTables())
+		print self.o.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
 
 
 if __name__ == '__main__':
