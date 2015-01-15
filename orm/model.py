@@ -2,7 +2,9 @@ import fields
 import inspect
 import orm
 import dbwords
+import exceptions
 
+		
 
 class BaseModel:
 	db = None
@@ -18,8 +20,8 @@ class BaseModel:
 
 	@classmethod
 	def setDB(cls, db, cursor):
-		BaseModel.db = db
-		BaseModel.cursor = cursor
+		cls.db = db
+		cls.cursor = cursor
 
 	@classmethod
 	def tableName(cls):
@@ -39,18 +41,22 @@ class BaseModel:
 
 	@classmethod
 	def createTableSQL(model):
+		if model.db is None:
+			raise exceptions.ModelNotRegisteredError
 		field_names = model.getfields()
 		fields = []
 		for field_name in field_names:
 			f = getattr(model, field_name)
 			ft = model.fieldtype(field_name)
-			sqtype = dbwords.gettype(BaseModel.db, ft) % getattr(model, field_name).meta
+			sqtype = dbwords.gettype(model.db, ft) % getattr(model, field_name).meta
 			field = field_name + " " + sqtype
 			fields.append(field)
 		return 'CREATE TABLE {table} ({fields})'.format(table=model.tableName(), fields=", ".join(fields))
 
 	@classmethod
 	def createTables(model):
+		if model.db is None:
+			raise exceptions.ModelNotRegisteredError
 		model.cursor.execute(model.createTableSQL())
 
 

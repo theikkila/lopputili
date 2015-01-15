@@ -4,7 +4,10 @@ import os
 from orm import ORM
 from orm import model
 from orm import fields
+from orm import exceptions
 
+class User2(model.Model):
+	first_name = fields.CharField(max_length=40, blank=True)
 
 class User(model.Model):
 	first_name = fields.CharField(max_length=40, blank=True)
@@ -34,6 +37,9 @@ class modelTest(unittest.TestCase):
 
 	def test_modelSQL(self):
 		self.assertEquals(User.createTableSQL(), "CREATE TABLE users (created datetime, first_name varchar(40), last_name varchar(40), password varchar(40), pk integer, updated datetime, username varchar(40))")
+
+	def test_notregistered(self):
+		self.assertRaises(exceptions.ModelNotRegisteredError, User2.createTableSQL)
 
 if __name__ == '__main__':
     unittest.main()
