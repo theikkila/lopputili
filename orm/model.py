@@ -1,8 +1,8 @@
 from . import fields
 import inspect
-from . import orm
 from . import dbwords
 from . import exceptions
+from . import collections
 import datetime
 import copy
 
@@ -86,8 +86,30 @@ class BaseModel(BaseMetaModel):
 	def get(model, pk):
 		dbset(model)
 		cursor = model.conn.cursor()
-		res = cursor.execute("SELECT * FROM %s" % model.tableName())
-		return model.deserialize(res.fetchone())
+		query = "SELECT * FROM %s WHERE pk = ?" % model.tableName()
+		res = cursor.execute(query, (pk,))
+		fetched = res.fetchone()
+		if fetched is None:
+			raise exceptions.ObjectNotFoundError()
+		return model.deserialize(fetched)
+
+	@classmethod
+	def filter(model, query):
+		dbset(model)
+		cursor = model.conn.cursor()
+		base_query = "SELECT * FROM %s WHERE " % model.tableName()
+		values = []
+		sql_parts = []
+		for sqlpart, value in query.sqls(dbwords.curryOperator(model.db)):
+			values.append(value)
+			sql_parts.append(sqlpart)
+		query = base_query + " AND ".join(sql_parts)
+		res = cursor.execute(query, values)
+		coll = []
+		for item in res:
+			coll.append(model.deserialize(item))
+		return collections.ModelCollection(coll)
+
 	@classmethod
 	def all(model):
 		dbset(model)
@@ -96,7 +118,7 @@ class BaseModel(BaseMetaModel):
 		collection = []
 		for item in res:
 			collection.append(model.deserialize(item))
-		return collection
+		return collections.ModelCollection(collection)
 
 	@classmethod
 	def setDB(cls, db, conn):

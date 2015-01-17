@@ -86,6 +86,13 @@ def data_types(db):
 	elif db == "postgresql":
 		return data_types_postgres
 
+def curryOperator(db):
+    def operator(oper):
+        if db == "sqlite":
+            return operators_sqlite[oper]
+        elif db == "postgresql":
+            return operators_postgres[oper]
+    return operator
 
 def gettype(db, field):
 	return data_types(db)[field]

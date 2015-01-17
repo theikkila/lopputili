@@ -3,6 +3,9 @@ import urllib.parse
 import sqlite3
 import psycopg2
 
+from . import query
+Query = query.Query
+
 urllib.parse.uses_netloc.append("postgres")
 urllib.parse.uses_netloc.append("sqlite")
 
