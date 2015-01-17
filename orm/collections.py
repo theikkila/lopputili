@@ -14,5 +14,8 @@ class ModelCollection(object):
 	def __iter__(self):
 		return iter(self.arr)
 
+	def __len__(self):
+		return len(self.arr)
+
 	def filter(self, queryset):
 		return ModelCollection([item for item in iter(self.arr) if queryset.filt(item)])

@@ -83,6 +83,7 @@ class BaseModel(BaseMetaModel):
 		self.conn.commit()
 		if cursor.lastrowid != None:
 			self.pk = cursor.lastrowid
+		return self
 
 	@classmethod
 	def get(model, pk):

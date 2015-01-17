@@ -41,7 +41,7 @@ class CharField(Field):
 	def isvalid(self):
 		if not super(CharField, self).isvalid():
 			return False
-		return len(self.value) <= self.meta['max_length']
+		return len(str(self.value)) <= self.meta['max_length']
 
 class IntegerField(Field):
 	name = "Integer"
