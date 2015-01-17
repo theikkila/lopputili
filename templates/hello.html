@@ -5,7 +5,7 @@
 		<tr><th>Time</th><th>UA</th></tr>
 	</thead>
 	<tbody>
-	{% for acc in uas|reverse|sort(attribute='time') %}
+	{% for acc in uas|reverse %}
 		<tr><td><strong>{{acc.time}}</strong></td><td>{{acc.useragent|truncate(140)}}</td></tr>
 	{% endfor %}
 	</tbody>

@@ -22,7 +22,7 @@ def hello_world():
 	s = Visit(useragent=request.headers.get('User-Agent'), time=datetime.datetime.now())
 	s.save()
 	a = Visit.all()
-	return render_template('hello.html', uas=a[len(a)-10:], count=len(a))
+	return render_template('hello.html', uas=sorted(a, key=lambda visit: visit.time)[len(a)-10:], count=len(a))
 
 @app.route('/esittelysivu')
 def introduction():
