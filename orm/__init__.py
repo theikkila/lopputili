@@ -25,7 +25,7 @@ class ORM:
 			self.c = self.conn.cursor()
 		else:
 			self.db = "sqlite"
-			self.conn = sqlite3.connect(self.dburi.netloc)
+			self.conn = sqlite3.connect(self.dburi.netloc, check_same_thread=False)
 			def dict_factory(cursor, row):
 				d = {}
 				for idx, col in enumerate(cursor.description):

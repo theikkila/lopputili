@@ -1,0 +1,12 @@
+<h1>Hello World!</h1>
+<h3>There have been {{count}} visitors!</h3>
+<table>
+	<thead>
+		<tr><th>Time</th><th>UA</th></tr>
+	</thead>
+	<tbody>
+	{% for acc in uas|reverse|sort(attribute='time') %}
+		<tr><td><strong>{{acc.time}}</strong></td><td>{{acc.useragent|truncate(140)}}</td></tr>
+	{% endfor %}
+	</tbody>
+</table>
