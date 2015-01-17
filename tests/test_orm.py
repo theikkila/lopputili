@@ -38,7 +38,7 @@ class ormTest(unittest.TestCase):
 		self.o.c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
 		self.assertEqual(self.o.c.fetchone(), {"name": "users"})
 		self.o.c.execute("SELECT * FROM users")
-		self.assertEqual(set(map(lambda x: x[0], self.o.c.description)), set(['created', 'first_name', 'last_name', 'password', 'pk', 'updated', 'username']))
+		self.assertEqual(set([x[0] for x in self.o.c.description]), set(['created', 'first_name', 'last_name', 'password', 'pk', 'updated', 'username']))
 
 if __name__ == '__main__':
     unittest.main()

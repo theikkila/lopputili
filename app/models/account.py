@@ -8,4 +8,4 @@ class Account(models.Model):
 	side = fields.CharField(max_length=13)
 
 	def __repr__(self):
-		return str(self.aid)+": "+self.name
+		return str(self.pk)+": "+self.name

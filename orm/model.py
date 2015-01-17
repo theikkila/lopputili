@@ -1,89 +1,93 @@
-import fields
+from . import fields
 import inspect
-import orm
-import dbwords
-import exceptions
+from . import orm
+from . import dbwords
+from . import exceptions
 import datetime
+import copy
 
 def dbset(model):
 	if model.db is None:
 		raise exceptions.ModelNotRegisteredError		
 
-# method factory for an attribute get method
-def getmethod(attrname):
-    def _getmethod(self):
-        return getattr(self, "_"+attrname).get()
-    return _getmethod
-
-def setmethod(attrname):
-    def _setmethod(self, value):
-        return getattr(self, "_"+attrname).set(value)
-    return _setmethod
 
 class ModelMeta(type):
-    def __new__(cls, name, parents, dct):
-    	ccd = {}
-    	ccd['fields'] = []
-    	for field in dct:
-    		if isinstance(dct[field], fields.Field):
-    			ccd['fields'].append(field)
-    			ccd['_'+field] = dct[field]
-    			#  dct['_'+field].set, dct['_'+field].del
-    			ccd[field] = property(getmethod(field), setmethod(field))
-    		else:
-    			ccd[field] = dct[field]
-    	#print ccd
-    	return super(ModelMeta, cls).__new__(cls, name, parents, ccd)
+	def __new__(cls, name, based, attributes):
+		#print ("Metaclass called")
+		if 'pk' not in attributes:
+			attributes['pk'] = fields.PKField()
+		new_attributes = {}
+		new_attributes['fields'] = []
+		for attrib_name in attributes:
+			attribute = attributes[attrib_name]
+			if isinstance(attribute, fields.Field):
+				new_attributes['fields'].append(attrib_name)
+				#print(new_attributes['fields'])
+				new_attributes['_'+attrib_name] = attribute
+				new_attributes[attrib_name] = fields.FieldDescriptor(attrib_name)
+			else:
+				new_attributes[attrib_name] = attribute
+		return super(ModelMeta, cls).__new__(cls, name, based, new_attributes)
 
-class BaseModel:
-	__metaclass__ = ModelMeta
+class BaseMetaModel(object, metaclass=ModelMeta):
+	def __init__(self, *args, **kwargs):
+		for field in self.fields:
+			#print field
+			setattr(self, '_'+field, copy.deepcopy(getattr(self, '_'+field)))
+			f = getattr(self, '_'+field)
+			#print(f, "on", '_'+field)
+			#setattr(self, field, fields.FieldDescriptor('_'+field, f))
+
+class BaseModel(BaseMetaModel):
 	db = None
 	conn = None
-	pk = fields.PKField()
 	def __init__(self, insert=True):
-		self.pk = fields.PKField()
+		super(BaseModel, self).__init__()
 		self.insert = insert
+
 
 	def serialize(self):
 		d = {}
 		for field_name in self.getfields():
 			field = getattr(self, '_'+field_name)
 			if not field.isvalid():
-				print "Error @", field_name
+				print("Error @", field_name)
 				raise exceptions.FieldNotValidError(field_name)
-			d[field_name] = field.get()
+			d[field_name] = field.value
 		return d
 
 	@classmethod
 	def deserialize(model, row):
 		a = model()
 		for field in row:
-			getattr(a, '_'+field).set(row[field])
+			getattr(a, '_'+field).value = row[field]
 		return a
 
 	def save(self):
 		dbset(self)
 		serialized = self.serialize()
-		#print serialized
 		del serialized['pk']
-		keys = ', '.join(serialized.keys())
-		updatepairs = ', '.join(map(lambda key: key+" = ?", serialized.keys()))
+		keys = ', '.join(list(serialized.keys()))
+		updatepairs = ', '.join([key+" = ?" for key in list(serialized.keys())])
 		qmarks = ', '.join('?' * len(serialized))
 		cursor = self.conn.cursor()
 		if self.insert:
 			query = "INSERT INTO %s (%s) VALUES (%s)" % (self.tableName(), keys, qmarks)
-			#print query, serialized.values(), self.pk
 			self.insert = False
-			res = cursor.execute(query, serialized.values())
+			res = cursor.execute(query, list(serialized.values()))
 		else:
 			query = "UPDATE %s SET %s WHERE pk = ?" % (self.tableName(), updatepairs)
-			#print query
-			res = cursor.execute(query, serialized.values()+[self.pk])
+			res = cursor.execute(query, list(serialized.values())+[self.pk])
 		self.conn.commit()
 		if cursor.lastrowid != None:
 			self.pk = cursor.lastrowid
-		#print "PK", self.pk
 
+	@classmethod
+	def get(model, pk):
+		dbset(model)
+		cursor = model.conn.cursor()
+		res = cursor.execute("SELECT * FROM %s" % model.tableName())
+		return model.deserialize(res.fetchone())
 	@classmethod
 	def all(model):
 		dbset(model)
@@ -108,9 +112,9 @@ class BaseModel:
 
 	@classmethod
 	def getfields(model):
-		field_names = [field for field in dir(model) if isinstance(getattr(model, field), fields.Field)]
-		field_names = map(lambda field: field[1:], field_names)
-		return field_names
+		#field_names = [field for field in dir(model) if isinstance(getattr(model, field), fields.Field)]
+		#field_names = map(lambda field: field[1:], field_names)
+		return model.fields
 
 	@classmethod
 	def fieldtype(model, field):
@@ -123,7 +127,7 @@ class BaseModel:
 		field_names = model.getfields()
 		fields = []
 		for field_name in field_names:
-			f = getattr(model, field_name)
+			f = getattr(model, '_'+field_name)
 			ft = model.fieldtype(field_name)
 			sqtype = dbwords.gettype(model.db, ft) % getattr(model, '_'+field_name).meta
 			field = field_name + " " + sqtype

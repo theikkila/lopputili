@@ -1,4 +1,19 @@
+from weakref import WeakKeyDictionary
 
+
+class FieldDescriptor(object):
+	def __init__(self, attrib):
+		self.test = {}
+		self.attrib = attrib
+
+	def __get__(self, instance=None, owner=None):
+		# grab the original value before we proxy
+		return getattr(instance, '_'+self.attrib).value
+
+	def __set__(self, instance, value):
+		#print("SET", instance, value)
+		getattr(instance, '_'+self.attrib).value = value
+		#self.storage.set(value)
 
 class Field(object):
 	def __init__(self, blank=False):
@@ -6,22 +21,16 @@ class Field(object):
 		self.blank = blank
 		self.value = None
 
-	def get(self):
-		return self.value
-
-	def set(self, value):
-		self.value = value
-
 	def isvalid(self):
 		if not self.blank and self.value is None:
 			return False
 		return True
 
-	def __repr__(self):
-		return str(self.value)
-
 class PKField(Field):
 	name = "PrimaryKey"
+
+	def isvalid(self):
+		return True
 
 class DateTimeField(Field):
 	name = "DateTimeField"

@@ -1,15 +1,15 @@
 import os
-import urlparse
+import urllib.parse
 import sqlite3
 import psycopg2
 
-urlparse.uses_netloc.append("postgres")
-urlparse.uses_netloc.append("sqlite")
+urllib.parse.uses_netloc.append("postgres")
+urllib.parse.uses_netloc.append("sqlite")
 
 class ORM:
 	def __init__(self):
 		self.models = []
-		self.dburi = urlparse.urlparse(os.getenv('DATABASE_URL', "sqlite://local.db"))
+		self.dburi = urllib.parse.urlparse(os.getenv('DATABASE_URL', "sqlite://local.db"))
 		self.db = self.dburi.scheme
 		if self.db == "postgres":
 			self.conn = psycopg2.connect(
