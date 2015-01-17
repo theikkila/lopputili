@@ -41,10 +41,12 @@ class BaseMetaModel(object, metaclass=ModelMeta):
 class BaseModel(BaseMetaModel):
 	db = None
 	conn = None
-	def __init__(self, insert=True):
+	def __init__(self, insert=True, **kwargs):
 		super(BaseModel, self).__init__()
 		self.insert = insert
-
+		for key in kwargs:
+			if key in self.fields:
+				setattr(self, key, kwargs[key])
 
 	def serialize(self):
 		d = {}
