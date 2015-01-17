@@ -1,10 +1,12 @@
 
 datet = $(shell date +%Y%m%d%H%M%S)
 
+python_bin = /usr/bin/python3.4
+
 venv: .venv/bin/activate
 
 .venv/bin/activate: requirements.txt
-	test -d .venv || virtualenv --no-site-packages --distribute .venv
+	test -d .venv || virtualenv --python=$(python_bin) --no-site-packages --distribute .venv
 	. .venv/bin/activate; pip install -Ur requirements.txt
 	touch .venv/bin/activate
 
@@ -14,7 +16,7 @@ run: venv
 docs: doc/toc cleardocs
 	@cat doc/toc |xargs -I '{}' cat doc/'{}' > doc/generated/documentation.md
 	@echo "Markdown docs generated to doc/generated/documentation.md"
-	@cat doc/toc |xargs -I '{}' cat doc/'{}' | python -c 'import httplib, urllib; import json, sys; params = urllib.urlencode({"source": sys.stdin.read()});headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "application/json"};conn = httplib.HTTPConnection("aurelius.eapp.fi");conn.request("POST", "/generate", params, headers);response = conn.getresponse();obj=json.load(response);print obj["file"]' | xargs -I '{}' curl -s --retry 5 --retry-delay 1 -o doc/generated/documentation.pdf http://aurelius.eapp.fi/'{}'.pdf
+	@cat doc/toc |xargs -I '{}' cat doc/'{}' | python -c 'import http.client, urllib.request, urllib.parse, urllib.error; import json, sys; params = urllib.parse.urlencode({"source": sys.stdin.read()});headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "application/json"};conn = http.client.HTTPConnection("aurelius.eapp.fi");conn.request("POST", "/generate", params, headers);response = conn.getresponse();obj=json.loads(response.read().decode("utf-8"));print((obj["file"]))' | xargs -I '{}' curl -s --retry 5 --retry-delay 1 -o doc/generated/documentation.pdf http://aurelius.eapp.fi/'{}'.pdf
 	@echo "PDF docs generated to doc/generated/documentation.pdf"
 
 
