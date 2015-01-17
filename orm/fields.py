@@ -7,13 +7,10 @@ class FieldDescriptor(object):
 		self.attrib = attrib
 
 	def __get__(self, instance=None, owner=None):
-		# grab the original value before we proxy
 		return getattr(instance, '_'+self.attrib).value
 
 	def __set__(self, instance, value):
-		#print("SET", instance, value)
 		getattr(instance, '_'+self.attrib).value = value
-		#self.storage.set(value)
 
 class Field(object):
 	def __init__(self, blank=False):
@@ -41,6 +38,15 @@ class CharField(Field):
 		super(CharField, self).__init__(blank=blank)
 		self.meta['max_length'] = max_length
 
+	def isvalid(self):
+		if not super(CharField, self).isvalid():
+			return False
+		return len(self.value) <= self.meta['max_length']
 
 class IntegerField(Field):
 	name = "Integer"
+
+	def isvalid(self):
+		if not super(IntegerField, self).isvalid():
+			return False
+		return isinstance(self.value, int)
