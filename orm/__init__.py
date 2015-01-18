@@ -16,11 +16,11 @@ class ORM:
 		self.db = self.dburi.scheme
 		if self.db == "postgres":
 			self.conn = psycopg2.connect(
-							database=url.path[1:],
-							user=url.username,
-							password=url.password,
-							host=url.hostname,
-							port=url.port
+							database=self.dburi.path[1:],
+							user=self.dburi.username,
+							password=self.dburi.password,
+							host=self.dburi.hostname,
+							port=self.dburi.port
 						)
 			self.c = self.conn.cursor()
 		else:

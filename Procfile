@@ -1,1 +1,1 @@
-web: gunicorn lopputili:app --log-file -
+web: uwsgi uwsgi.ini
