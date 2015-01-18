@@ -90,7 +90,7 @@ def curryOperator(db):
     def operator(oper):
         if db == "sqlite":
             return operators_sqlite[oper]
-        elif db == "postgresql":
+        elif db == "postgres":
             return operators_postgres[oper]
     return operator
 
