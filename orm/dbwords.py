@@ -83,7 +83,7 @@ operators_postgres = {
 def data_types(db):
 	if db == "sqlite":
 		return data_types_sqlite
-	elif db == "postgresql":
+	elif db == "postgres":
 		return data_types_postgres
 
 def curryOperator(db):
