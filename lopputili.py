@@ -1,6 +1,6 @@
 # encoding: utf-8
+import os
 from flask import Flask, request, render_template
-
 from orm import ORM
 from app.models.account import Account
 from app.models.user import User
@@ -30,4 +30,4 @@ def introduction():
     return markdown2.markdown_path('doc/generated/documentation.md')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=3000)
+    app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', 3000)))
