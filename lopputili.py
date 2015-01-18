@@ -30,4 +30,4 @@ def introduction():
     return markdown2.markdown_path('doc/generated/documentation.md')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=3000)
