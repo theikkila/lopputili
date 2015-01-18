@@ -1,1 +1,1 @@
-web: python lopputili.py
+web: uwsgi uwsgi.ini

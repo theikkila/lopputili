@@ -2,6 +2,7 @@ import os
 import urllib.parse
 import sqlite3
 import psycopg2
+import psycopg2.extras
 
 from . import query
 Query = query.Query
@@ -20,8 +21,10 @@ class ORM:
 							user=self.dburi.username,
 							password=self.dburi.password,
 							host=self.dburi.hostname,
-							port=self.dburi.port
+							port=self.dburi.port,
+							cursor_factory=psycopg2.extras.RealDictCursor
 						)
+			self.conn.autocommit = True
 			self.c = self.conn.cursor()
 		else:
 			self.db = "sqlite"
@@ -42,6 +45,6 @@ class ORM:
 		for model in self.models:
 			try:
 				model.createTables()
-			except sqlite3.OperationalError:
+			except:
 				return False
 		return True
