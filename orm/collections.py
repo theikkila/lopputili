@@ -1,5 +1,4 @@
-
-
+from .query import Query
 
 class ModelCollection(object):
 	def __init__(self, arr):
@@ -17,5 +16,9 @@ class ModelCollection(object):
 	def __len__(self):
 		return len(self.arr)
 
-	def filter(self, queryset):
+	def filter(self, *args, **kwargs):
+		if type(args) is tuple and len(args) == 1 and type(args[0]) == Query:
+			queryset = args[0]
+		else:
+			queryset = Query(**kwargs)
 		return ModelCollection([item for item in iter(self.arr) if queryset.filt(item)])

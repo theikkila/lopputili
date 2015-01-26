@@ -69,29 +69,19 @@ class BaseModel(BaseMetaModel):
 		dbset(self)
 		serialized = self.serialize()
 		del serialized['pk']
-		keys = ', '.join(list(serialized.keys()))
-		updatepairs = ', '.join([key+" = ?" for key in list(serialized.keys())])
-		qmarks = ', '.join('?' * len(serialized))
-		cursor = self.conn.cursor()
+
 		if self.insert:
-			query = "INSERT INTO %s (%s) VALUES (%s)" % (self.tableName(), keys, qmarks)
 			self.insert = False
-			res = cursor.execute(self.hq(query), list(serialized.values()))
+			self.pk = self.db.insert(self.tableName(), serialized)
 		else:
-			query = "UPDATE %s SET %s WHERE pk = ?" % (self.tableName(), updatepairs)
-			res = cursor.execute(self.hq(query), list(serialized.values())+[self.pk])
-		self.conn.commit()
-		if cursor.lastrowid != None:
-			self.pk = cursor.lastrowid
+			self.db.update(self.tableName(), serialized)
 		return self
+
 
 	@classmethod
 	def get(model, pk):
 		dbset(model)
-		cursor = model.conn.cursor()
-		query = "SELECT * FROM %s WHERE pk = ?" % model.tableName()
-		res = cursor.execute(model.hq(query), (pk,))
-		fetched = res.fetchone()
+		fetched = model.db.getById(model.tableName(), pk)
 		if fetched is None:
 			raise exceptions.ObjectNotFoundError()
 		return model.deserialize(fetched)
@@ -99,15 +89,7 @@ class BaseModel(BaseMetaModel):
 	@classmethod
 	def filter(model, query):
 		dbset(model)
-		cursor = model.conn.cursor()
-		base_query = "SELECT * FROM %s WHERE " % model.tableName()
-		values = []
-		sql_parts = []
-		for sqlpart, value in query.sqls(dbwords.curryOperator(model.db)):
-			values.append(value)
-			sql_parts.append(sqlpart)
-		query = base_query + " AND ".join(sql_parts)
-		res = cursor.execute(model.hq(query), values)
+		res = model.db.filter(model.tableName(), query)
 		coll = []
 		for item in res:
 			coll.append(model.deserialize(item))
@@ -116,18 +98,15 @@ class BaseModel(BaseMetaModel):
 	@classmethod
 	def all(model):
 		dbset(model)
-		cursor = model.conn.cursor()
-		res = cursor.execute(model.hq("SELECT * FROM %s" % model.tableName()))
+		res = model.db.all(model.tableName())
 		collection = []
-		n = model.r(res, cursor)
-		for item in n:
+		for item in res:
 			collection.append(model.deserialize(item))
 		return collections.ModelCollection(collection)
 
 	@classmethod
-	def setDB(cls, db, conn):
+	def setDB(cls, db):
 		cls.db = db
-		cls.conn = conn
 
 	@classmethod
 	def tableName(cls):
@@ -146,39 +125,6 @@ class BaseModel(BaseMetaModel):
 	def fieldtype(model, field):
 		return getattr(model, '_'+field).__class__.__name__
 
-
-	@classmethod
-	def createTableSQL(model):
-		dbset(model)
-		field_names = model.getfields()
-		fields = []
-		for field_name in field_names:
-			f = getattr(model, '_'+field_name)
-			ft = model.fieldtype(field_name)
-			sqtype = dbwords.gettype(model.db, ft) % getattr(model, '_'+field_name).meta
-			field = field_name + " " + sqtype
-			fields.append(field)
-		#print ", ".join(fields)
-		return 'CREATE TABLE {table} ({fields})'.format(table=model.tableName(), fields=", ".join(fields))
-
-	@classmethod
-	def r(model, so1, so2):
-		if so1 is None:
-			return so2
-		return so1
-
-	@classmethod
-	def hq(model, query):
-		dbset(model)
-		if model.db == 'postgres':
-			return query.replace('?', '%s')
-		return query
-
-	@classmethod
-	def createTables(model):
-		dbset(model)
-		cursor = model.conn.cursor()
-		cursor.execute(model.createTableSQL())
 
 
 class Model(BaseModel):

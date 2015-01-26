@@ -29,16 +29,16 @@ class ormTest(unittest.TestCase):
 		self.assertTrue(os.path.isfile(testDBpath))
 
 	def testOrmInit(self):
-		self.assertEqual(self.o.db, "sqlite")
+		self.assertEqual(self.o.db.db, "sqlite")
 
 	def testRegisterModel(self):
 		self.o.registerModel(User)
 		self.assertEqual(len(self.o.models), 1)
 		self.assertTrue(self.o.initTables())
-		self.o.c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
-		self.assertEqual(self.o.c.fetchone(), {"name": "users"})
-		self.o.c.execute("SELECT * FROM users")
-		self.assertEqual(set([x[0] for x in self.o.c.description]), set(['first_name', 'last_name', 'password', 'pk', 'username']))
+		r = self.o.db.query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
+		self.assertEqual(r.fetchone(), {"name": "users"})
+		self.o.db.query("SELECT * FROM users")
+		self.assertEqual(set([x[0] for x in self.o.db.cursor.description]), set(['first_name', 'last_name', 'password', 'pk', 'username']))
 
 if __name__ == '__main__':
     unittest.main()

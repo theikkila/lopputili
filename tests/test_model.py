@@ -44,7 +44,7 @@ class modelTest(unittest.TestCase):
 	#	self.assertEqual(User.createTableSQL(), "CREATE TABLE users (password varchar(40), first_name varchar(40), last_name varchar(40), pk integer primary key, username varchar(40))")
 
 	def test_notregistered(self):
-		self.assertRaises(exceptions.ModelNotRegisteredError, User2.createTableSQL)
+		self.assertRaises(exceptions.ModelNotRegisteredError, User2.all)
 
 	def test_basic_save(self):
 		u = User(first_name="Testi", last_name="Last von Name", username="testuser", password="testpasswd")
@@ -72,7 +72,7 @@ class modelTest(unittest.TestCase):
 			User(username="user"+str(x), password="testpasswd").save()
 		collection = User.all()
 		self.assertEqual(len(collection), 10)
-		self.assertEqual(len(collection.filter(Query(pk__gt=5))), 5)
+		self.assertEqual(len(collection.filter(pk__gt=5)), 5)
 
 if __name__ == '__main__':
     unittest.main()

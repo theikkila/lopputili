@@ -8,3 +8,4 @@ class FieldNotValidError(Exception):
 		self.field = field
 
 class ObjectNotFoundError(Exception): pass
+class DBNotInitializedError(Exception): pass
