@@ -94,10 +94,11 @@ class Database:
 		return res
 
 	def update(self, table, serialized):
+		pk = serialized['pk']
+		del serialized['pk']
 		updatepairs = ', '.join([key+" = ?" for key in list(serialized.keys())])
-		raw_query = "UPDATE %s SET %s WHERE pk = ?" % (self.tableName(), updatepairs)
-
-		res = self.query(raw_query, list(serialized.values())+[self.pk])
+		raw_query = "UPDATE %s SET %s WHERE pk = ?" % (table, updatepairs)
+		res = self.query(raw_query, list(serialized.values())+[pk])
 		return res
 
 	def getById(self, table, pk):
@@ -110,7 +111,7 @@ class Database:
 
 		values = []
 		sql_parts = []
-		for sqlpart, value in query.sqls(dbwords.curryOperator(model.db)):
+		for sqlpart, value in query.sqls(dbwords.curryOperator(self.db)):
 			values.append(value)
 			sql_parts.append(sqlpart)
 		raw_query = base_query + " AND ".join(sql_parts)
@@ -118,3 +119,28 @@ class Database:
 
 	def all(self, table):
 		return self.query("SELECT * FROM %s" % table)
+
+	def exportData(self):
+		tables_sql_pg = "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';"
+		tables_sql_lite = 'SELECT name FROM sqlite_master WHERE type = "table";'
+		self.cursor = self.conn.cursor()
+		if self.db == 'postgres':
+			tables_query = tables_sql_pg
+		else:
+			tables_query = tables_sql_lite
+		res = self.cursor.execute(tables_query)
+		all_tables = []
+		for table in res.fetchall():
+			t = {"name":table['name'], "headers":[], "rows":[]}
+			rows = self.cursor.execute('SELECT * FROM %s' % table['name'])
+			for row in rows.fetchall():
+				if len(t['headers']) == 0:
+					t['headers'] = list(row.keys())
+				trow = []
+				for header in t['headers']:
+					#print(header)
+					#print(row)
+					trow.append(row.get(header, '---'))
+				t["rows"].append(trow)
+			all_tables.append(t)
+		return all_tables

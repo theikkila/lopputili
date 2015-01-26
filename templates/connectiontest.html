@@ -1,0 +1,23 @@
+
+{% for table in data %}
+<h1>{{table.name}}</h1>
+<strong>{{table.rows|length}} rows.</strong>
+<table border="1">
+<thead>
+	<tr>
+		{% for header in table.headers %}
+		<th>{{header}}</th>
+		{% endfor %}
+	</tr>
+</thead>
+
+	{% for row in table.rows %}
+	   <tr>
+	{% for value in row %}
+	        <td> {{ value }} </td>
+	{% endfor %}
+	   </tr>
+	{% endfor %}
+
+</table>
+{% endfor %}

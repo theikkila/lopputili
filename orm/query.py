@@ -37,6 +37,13 @@ operators_filters = {
 }
 
 
+def queryset(*args, **kwargs):
+	if type(args) is tuple and len(args) == 1 and type(args[0]) == Query:
+		queryset = args[0]
+	else:
+		queryset = Query(**kwargs)
+	return queryset
+
 class Query(object):
 	def __init__(self, **kwargs):
 		self.params = []

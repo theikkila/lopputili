@@ -1,6 +1,6 @@
 from . import fields
 import inspect
-from . import dbwords
+from .query import queryset
 from . import exceptions
 from . import collections
 import datetime
@@ -9,7 +9,6 @@ import copy
 def dbset(model):
 	if model.db is None:
 		raise exceptions.ModelNotRegisteredError		
-
 
 class ModelMeta(type):
 	def __new__(cls, name, based, attributes):
@@ -68,8 +67,7 @@ class BaseModel(BaseMetaModel):
 	def save(self):
 		dbset(self)
 		serialized = self.serialize()
-		del serialized['pk']
-
+		
 		if self.insert:
 			self.insert = False
 			self.pk = self.db.insert(self.tableName(), serialized)
@@ -87,8 +85,9 @@ class BaseModel(BaseMetaModel):
 		return model.deserialize(fetched)
 
 	@classmethod
-	def filter(model, query):
+	def filter(model, *args, **kwargs):
 		dbset(model)
+		query = queryset(*args, **kwargs)
 		res = model.db.filter(model.tableName(), query)
 		coll = []
 		for item in res:

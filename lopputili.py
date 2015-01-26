@@ -25,6 +25,12 @@ def hello_world():
 	a = Visit.all()
 	return render_template('hello.html', uas=sorted(a, key=lambda visit: visit.time)[len(a)-10:], count=len(a))
 
+@app.route('/connectiontest')
+def connectiontest():
+	data = o.db.exportData()
+	return render_template('connectiontest.html', data=data)
+
+
 @app.route('/esittelysivu')
 def introduction():
     return markdown2.markdown_path('doc/generated/documentation.md')
