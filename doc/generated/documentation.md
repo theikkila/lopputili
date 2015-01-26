@@ -11,6 +11,7 @@ Käyttäjän selaimen on tuettava HTML5-merkkauskieltä ja Javascriptiä.
 
 Sovellus käyttää tietokantanaan *PostgreSQL*-tietokantaa ja kehittäessä kantana on *SQLite*.
 
+Sovellusta varten on itse kirjoitettu ORM käyttäen hyväksi pythonin metaluokkia.
 
 Sovellus on pystytetty [tänne](http://lopputili.viski.me/)
 # Käyttö
@@ -58,5 +59,10 @@ Käyttäjä voi merkitä laskut maksetuiksi ja seurata vanhojen laskujen tietoja
 #### Tulostaa raportteja
 Käyttäjä voi tulostaa erilaisia raportteja laskuista ja tileistä. (esim. kuukauden alv:t, maksamattomat laskut, yms.)
 
+# Käyttöliittymä
+
+Käyttöliittymä on luonnosteltu HTML-kielellä lean-tyyliin.
+
+![Käyttöliittymäkaavio](https://raw.githubusercontent.com/theikkila/lopputili/master/doc/guichart.png)
 # PDF
 PDF-muotoinen dokumentaatio ladattavissa [@ Github](https://github.com/theikkila/lopputili/blob/master/doc/generated/documentation.pdf?raw=true)

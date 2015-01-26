@@ -11,5 +11,6 @@ Käyttäjän selaimen on tuettava HTML5-merkkauskieltä ja Javascriptiä.
 
 Sovellus käyttää tietokantanaan *PostgreSQL*-tietokantaa ja kehittäessä kantana on *SQLite*.
 
+Sovellusta varten on itse kirjoitettu ORM käyttäen hyväksi pythonin metaluokkia.
 
 Sovellus on pystytetty [tänne](http://lopputili.viski.me/)
