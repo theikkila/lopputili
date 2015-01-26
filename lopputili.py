@@ -35,5 +35,27 @@ def connectiontest():
 def introduction():
     return markdown2.markdown_path('doc/generated/documentation.md')
 
+
+# Real routes
+
+@app.route('/settings')
+def settings():
+	return render_template('settings.html')
+
+@app.route('/contacts')
+def contacts():
+	return render_template('contacts.html')
+
+@app.route('/invoices')
+def invoices():
+	return render_template('invoices.html')
+
+@app.route('/accounts')
+def accounts():
+	return render_template('accounts.html')
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', 3000)))
