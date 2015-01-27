@@ -1,6 +1,7 @@
 
 data_types_sqlite = {
     'AutoField': 'integer',
+    'ForeignKeyField': 'integer',
     'PKField': 'integer primary key',
     'BinaryField': 'BLOB',
     'BooleanField': 'bool',
@@ -41,6 +42,7 @@ operators_sqlite = {
 
 data_types_postgres = {
     'AutoField': 'serial',
+    'ForeignKeyField': 'serial',
     'PKField': 'serial',
     'BinaryField': 'bytea',
     'BooleanField': 'boolean',

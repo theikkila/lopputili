@@ -54,7 +54,9 @@ class Database:
 
 	def createTables(self, model):
 		cursor = self.conn.cursor()
-		cursor.execute(self.createTableSQL(model))
+		sql = self.createTableSQL(model)
+		#print(sql)
+		cursor.execute(sql)
 
 	def parse_query(self, query):
 		if self.db == 'postgres':

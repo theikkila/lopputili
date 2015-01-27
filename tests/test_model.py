@@ -10,14 +10,20 @@ from orm import Query
 class User2(model.Model):
 	first_name = fields.CharField(max_length=40, blank=True)
 
+
 class User(model.Model):
 	first_name = fields.CharField(max_length=40, blank=True)
 	last_name = fields.CharField(max_length=40, blank=True)
 	username = fields.CharField(max_length=40)
 	password = fields.CharField(max_length=40)
+	pets = fields.HasField('Pet', 'owner')
 
 	def __str__(self):
 		return self.first_name+" "+self.last_name
+
+class Pet(model.Model):
+	name = fields.CharField(max_length=40, blank=True)
+	owner = fields.ForeignKeyField(User)
 
 testDBpath = "test.db"
 
@@ -28,6 +34,7 @@ class modelTest(unittest.TestCase):
 			os.remove(testDBpath)
 		self.o = ORM()
 		self.o.registerModel(User)
+		self.o.registerModel(Pet)
 		self.o.initTables()
 
 	def tearDown(self):
@@ -73,6 +80,23 @@ class modelTest(unittest.TestCase):
 		collection = User.all()
 		self.assertEqual(len(collection), 10)
 		self.assertEqual(len(collection.filter(pk__gt=5)), 5)
+
+	def test_foreignkey(self):
+		a = User(first_name="Paul", last_name="Petowner", username="testuser", password="testpasswd").save()
+		p = Pet(name="Fluffy", owner=a).save()
+		np = Pet.get(p.pk)
+		self.assertEqual(np.owner.username, 'testuser')
+		np.owner.username = "testuser2"
+		np.owner.save()
+		self.assertEqual(np.owner.username, 'testuser2')
+
+	def test_reverse_relation(self):
+		a = User(first_name="Paul", last_name="Petowner", username="testuser", password="testpasswd").save()
+		b = Pet(name="Fluffy", owner=a).save()
+		c = Pet(name="Bluffy", owner=a).save()
+		collection = a.pets
+		self.assertEqual(len(collection), 2)
+		self.assertEqual(collection[0].name, b.name)
 
 if __name__ == '__main__':
     unittest.main()

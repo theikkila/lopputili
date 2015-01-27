@@ -4,38 +4,14 @@ from .query import queryset
 from . import exceptions
 from . import collections
 import datetime
-import copy
+
+from . import modelmeta
+BaseMetaModel = modelmeta.BaseMetaModel
 
 def dbset(model):
 	if model.db is None:
 		raise exceptions.ModelNotRegisteredError		
 
-class ModelMeta(type):
-	def __new__(cls, name, based, attributes):
-		#print ("Metaclass called")
-		if 'pk' not in attributes:
-			attributes['pk'] = fields.PKField()
-		new_attributes = {}
-		new_attributes['fields'] = []
-		for attrib_name in attributes:
-			attribute = attributes[attrib_name]
-			if isinstance(attribute, fields.Field):
-				new_attributes['fields'].append(attrib_name)
-				#print(new_attributes['fields'])
-				new_attributes['_'+attrib_name] = attribute
-				new_attributes[attrib_name] = fields.FieldDescriptor(attrib_name)
-			else:
-				new_attributes[attrib_name] = attribute
-		return super(ModelMeta, cls).__new__(cls, name, based, new_attributes)
-
-class BaseMetaModel(object, metaclass=ModelMeta):
-	def __init__(self, *args, **kwargs):
-		for field in self.fields:
-			#print field
-			setattr(self, '_'+field, copy.deepcopy(getattr(self, '_'+field)))
-			f = getattr(self, '_'+field)
-			#print(f, "on", '_'+field)
-			#setattr(self, field, fields.FieldDescriptor('_'+field, f))
 
 class BaseModel(BaseMetaModel):
 	db = None
@@ -62,12 +38,13 @@ class BaseModel(BaseMetaModel):
 		a = model()
 		for field in row:
 			getattr(a, '_'+field).value = row[field]
+		a.insert = False
 		return a
 
 	def save(self):
 		dbset(self)
 		serialized = self.serialize()
-		
+
 		if self.insert:
 			self.insert = False
 			self.pk = self.db.insert(self.tableName(), serialized)
@@ -104,8 +81,9 @@ class BaseModel(BaseMetaModel):
 		return collections.ModelCollection(collection)
 
 	@classmethod
-	def setDB(cls, db):
+	def setDB(cls, db, orm):
 		cls.db = db
+		cls.orm = orm
 
 	@classmethod
 	def tableName(cls):
@@ -124,7 +102,11 @@ class BaseModel(BaseMetaModel):
 	def fieldtype(model, field):
 		return getattr(model, '_'+field).__class__.__name__
 
-
+	def __eq__(self, other):
+		if isinstance(other, self.__class__):
+			return self.__dict__ == other.__dict__
+		else:
+			return False
 
 class Model(BaseModel):
 	#updated = fields.DateTimeField()
