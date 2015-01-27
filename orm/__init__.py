@@ -3,6 +3,7 @@ import os
 
 from . import query
 from . import sql
+from sqlite3 import OperationalError
 Database = sql.Database
 Query = query.Query
 
@@ -25,6 +26,6 @@ class ORM:
 		for model in self.models:
 			try:
 				self.db.createTables(model)
-			except:
+			except OperationalError:
 				return False
 		return True

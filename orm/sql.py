@@ -38,19 +38,27 @@ class Database:
 					d[col[0]] = row[idx]
 				return d
 			self.conn.row_factory = dict_factory
+			self.conn.cursor().execute("PRAGMA foreign_keys = ON")
 		self.cursor = self.conn.cursor()
 
 	def createTableSQL(self, model):
 		field_names = model.getfields()
 		fields = []
+		contrs = []
 		for field_name in field_names:
 			f = getattr(model, '_'+field_name)
 			ft = model.fieldtype(field_name)
-			sqtype = dbwords.gettype(self.db, ft) % getattr(model, '_'+field_name).meta
+			typevars = dict(list(getattr(model, '_'+field_name).meta.items())+list({"key": field_name}.items()))
+			sqtype = dbwords.gettype(self.db, ft) % typevars
+			splitted = sqtype.split(',')
+			sqtype = splitted[0]
+			if len(splitted) > 1:
+				contrs.append(splitted[1])
+			#print(sqtype)
 			field = field_name + " " + sqtype
 			fields.append(field)
 		#print ", ".join(fields)
-		return 'CREATE TABLE {table} ({fields})'.format(table=model.tableName(), fields=", ".join(fields))
+		return 'CREATE TABLE {table} ({fields})'.format(table=model.tableName(), fields=", ".join(fields+contrs))
 
 	def createTables(self, model):
 		cursor = self.conn.cursor()
@@ -101,6 +109,11 @@ class Database:
 		updatepairs = ', '.join([key+" = ?" for key in list(serialized.keys())])
 		raw_query = "UPDATE %s SET %s WHERE pk = ?" % (table, updatepairs)
 		res = self.query(raw_query, list(serialized.values())+[pk])
+		return res
+
+	def delete(self, table, pk):
+		raw_query = "DELETE FROM %s WHERE pk = ?" % table
+		res = self.query(raw_query, pk)
 		return res
 
 	def getById(self, table, pk):

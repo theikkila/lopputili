@@ -52,6 +52,10 @@ class BaseModel(BaseMetaModel):
 			self.db.update(self.tableName(), serialized)
 		return self
 
+	def delete(self):
+		dbset(self)
+		self.db.delete(self.tableName(), self.pk)
+		return self
 
 	@classmethod
 	def get(model, pk):

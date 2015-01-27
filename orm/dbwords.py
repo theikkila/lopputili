@@ -1,7 +1,7 @@
 
 data_types_sqlite = {
     'AutoField': 'integer',
-    'ForeignKeyField': 'integer',
+    'ForeignKeyField': 'integer, foreign key(%(key)s) references %(tablename)s(pk) on delete cascade',
     'PKField': 'integer primary key',
     'BinaryField': 'BLOB',
     'BooleanField': 'bool',
@@ -42,8 +42,8 @@ operators_sqlite = {
 
 data_types_postgres = {
     'AutoField': 'serial',
-    'ForeignKeyField': 'serial',
-    'PKField': 'serial',
+    'ForeignKeyField': 'integer REFERENCES %(tablename)s ON DELETE CASCADE',
+    'PKField': 'integer PRIMARY KEY',
     'BinaryField': 'bytea',
     'BooleanField': 'boolean',
     'CharField': 'varchar(%(max_length)s)',

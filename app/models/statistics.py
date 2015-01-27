@@ -1,7 +1,7 @@
-from orm import models
+from orm import model
 from orm import fields
 
-class Visit(models.Model):
+class Visit(model.Model):
 	useragent = fields.CharField(max_length=400)
 	time = fields.DateTimeField()
 

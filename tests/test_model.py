@@ -98,5 +98,15 @@ class modelTest(unittest.TestCase):
 		self.assertEqual(len(collection), 2)
 		self.assertEqual(collection[0].name, b.name)
 
+	def test_delete_cascade(self):
+		a = User(first_name="Paul", last_name="Petowner", username="testuser", password="testpasswd").save()
+		b = Pet(name="Fluffy", owner=a).save()
+		c = Pet(name="Bluffy", owner=a).save()
+		collection = a.pets
+		self.assertEqual(len(collection), 2)
+		self.assertEqual(collection[0].name, b.name)
+		a.delete()
+		self.assertEqual(len(a.pets), 0)
+
 if __name__ == '__main__':
     unittest.main()

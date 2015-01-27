@@ -1,7 +1,7 @@
-from orm import models
+from orm import model
 from orm import fields
 
-class User(models.Model):
+class User(model.Model):
 	first_name = fields.CharField(max_length=40, blank=True)
 	last_name = fields.CharField(max_length=40, blank=True)
 	username = fields.CharField(max_length=40)

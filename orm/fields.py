@@ -26,6 +26,7 @@ class ForeignKeyField(Field):
 	def __init__(self, model, blank=False):
 		super(ForeignKeyField, self).__init__(blank=blank)
 		self.meta['model'] = model
+		self.meta['tablename'] = model.tableName()
 
 		self.value = None
 		self.instance = None

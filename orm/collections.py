@@ -19,3 +19,6 @@ class ModelCollection(object):
 	def filter(self, *args, **kwargs):
 		q = queryset(*args, **kwargs)
 		return ModelCollection([item for item in iter(self.arr) if q.filt(item)])
+
+	def __repr__(self):
+		return str(self.arr)
