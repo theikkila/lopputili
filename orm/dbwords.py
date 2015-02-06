@@ -43,7 +43,7 @@ operators_sqlite = {
 data_types_postgres = {
     'AutoField': 'serial',
     'ForeignKeyField': 'integer REFERENCES %(tablename)s ON DELETE CASCADE',
-    'PKField': 'integer PRIMARY KEY',
+    'PKField': 'serial PRIMARY KEY',
     'BinaryField': 'bytea',
     'BooleanField': 'boolean',
     'CharField': 'varchar(%(max_length)s)',

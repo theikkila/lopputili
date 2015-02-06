@@ -33,6 +33,9 @@ class modelTest(unittest.TestCase):
 		if os.path.isfile(testDBpath):
 			os.remove(testDBpath)
 		self.o = ORM()
+		if self.o.db.db == "postgres":
+			self.o.db.cursor.execute("drop schema public cascade")
+			self.o.db.cursor.execute("create schema public")
 		self.o.registerModel(User)
 		self.o.registerModel(Pet)
 		self.o.initTables()

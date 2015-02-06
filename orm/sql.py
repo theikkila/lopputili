@@ -77,6 +77,7 @@ class Database:
 
 		params = self.parse_params(raw_params)
 		if params:
+			print(q)
 			res = self.cursor.execute(q, params)
 		else:
 			res = self.cursor.execute(q)	
@@ -93,6 +94,7 @@ class Database:
 		return params
 
 	def insert(self, table, serialized):
+		del serialized['pk']
 		keys = ', '.join(list(serialized.keys()))
 		
 		qmarks = ', '.join('?' * len(serialized))

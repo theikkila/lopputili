@@ -4,6 +4,7 @@ import os
 from . import query
 from . import sql
 from sqlite3 import OperationalError
+from psycopg2 import ProgrammingError
 Database = sql.Database
 Query = query.Query
 
@@ -27,5 +28,7 @@ class ORM:
 			try:
 				self.db.createTables(model)
 			except OperationalError:
+				return False
+			except ProgrammingError:
 				return False
 		return True

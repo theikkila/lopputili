@@ -30,3 +30,6 @@ clear: cleardocs
 	
 test:
 	@PYTHONPATH=. DATABASE_URL=sqlite://test.db python3 -m unittest discover tests/
+
+testpsg:
+	@PYTHONPATH=. DATABASE_URL=postgres://lopputili:lopputili@localhost:5432/lopputili python3 -m unittest discover tests/

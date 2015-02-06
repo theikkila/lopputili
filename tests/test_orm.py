@@ -20,23 +20,28 @@ class ormTest(unittest.TestCase):
 		if os.path.isfile(testDBpath):
 			os.remove(testDBpath)
 		self.o = ORM()
+		if self.o.db.db == "postgres":
+			self.o.db.cursor.execute("drop schema public cascade")
+			self.o.db.cursor.execute("create schema public")
 
 	def tearDown(self):
 		if os.path.isfile(testDBpath):
 			os.remove(testDBpath)
 
 	def testCreateDB(self):
-		self.assertTrue(os.path.isfile(testDBpath))
+		if self.o.db.db == "sqlite":
+			self.assertTrue(os.path.isfile(testDBpath))
 
 	def testOrmInit(self):
-		self.assertEqual(self.o.db.db, "sqlite")
+		self.assertEqual(self.o.db.db is not None, True)
 
 	def testRegisterModel(self):
 		self.o.registerModel(User)
 		self.assertEqual(len(self.o.models), 1)
 		self.assertTrue(self.o.initTables())
-		r = self.o.db.query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
-		self.assertEqual(r.fetchone(), {"name": "users"})
+		if self.o.db == "sqlite":
+			r = self.o.db.query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
+			self.assertEqual(r.fetchone(), {"name": "users"})
 		self.o.db.query("SELECT * FROM users")
 		self.assertEqual(set([x[0] for x in self.o.db.cursor.description]), set(['first_name', 'last_name', 'password', 'pk', 'username']))
 
