@@ -67,6 +67,9 @@ class PKField(Field):
 class DateTimeField(Field):
 	name = "DateTimeField"
 
+class DateField(Field):
+	name = "DateField"
+
 class CharField(Field):
 	name = "String"
 	def __init__(self, max_length=30, blank=False):

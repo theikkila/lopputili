@@ -4,6 +4,7 @@ from flask import Flask, request, render_template
 from orm import ORM
 from app.models.account import Account
 from app.models.user import User
+from app.controllers.receipts import ReceiptsController
 
 from app.models.statistics import Visit
 
@@ -50,12 +51,9 @@ def contacts():
 def invoices():
 	return render_template('invoices.html')
 
-@app.route('/accounts')
-def accounts():
-	return render_template('accounts.html')
 
 
-
+app.add_url_rule('/receipts/<name>', view_func=ReceiptsController.as_view('receipts'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', 3000)))
