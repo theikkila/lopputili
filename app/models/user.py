@@ -6,3 +6,6 @@ class User(model.Model):
 	last_name = fields.CharField(max_length=40, blank=True)
 	username = fields.CharField(max_length=40)
 	password = fields.CharField(max_length=40)
+
+	def is_valid_password(self, pw2):
+		return pw2 == self.password

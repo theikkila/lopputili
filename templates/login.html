@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <h1>Kirjaudu sisään</h1>
+    <form class="form-horizontal" method="post">
+      <fieldset>
+      {% if e %}
+      <div class="alert alert-warning">
+      {{e}}
+      </div>
+      {% endif %}
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="username">Käyttäjänimi</label>  
+          <div class="col-md-8">
+            <input id="username" name="username" type="text" placeholder="mikkoks" class="form-control input-md" required="">
+            
+          </div>
+        </div>
+
+        <!-- Password input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="password">Salasana</label>
+          <div class="col-md-8">
+            <input id="password" name="password" type="password" placeholder="salakala" class="form-control input-md" required="">
+            
+          </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="login">Kirjaudu</label>
+          <div class="col-md-4">
+            <button id="login" name="login" class="btn btn-primary">Kirjaudu sisään</button>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+  {% endblock %}

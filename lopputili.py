@@ -5,6 +5,7 @@ from orm import ORM
 from app.models.account import Account
 from app.models.user import User
 from app.controllers.receipts import ReceiptsController
+from app.controllers.login import LoginController, logout
 
 from app.models.statistics import Visit
 
@@ -17,6 +18,8 @@ o.registerModel(Account)
 o.registerModel(User)
 o.registerModel(Visit)
 o.initTables()
+
+u = User(username="test", password="test").save()
 
 @app.route('/')
 def hello_world():
@@ -53,7 +56,11 @@ def invoices():
 
 
 
-app.add_url_rule('/receipts/<name>', view_func=ReceiptsController.as_view('receipts'))
+app.add_url_rule('/login', view_func=LoginController.as_view('login'))
+app.add_url_rule('/logout', 'logout', logout)
+app.add_url_rule('/receipts', view_func=ReceiptsController.as_view('receipts'))
+
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', 3000)))

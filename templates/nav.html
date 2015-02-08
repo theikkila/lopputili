@@ -3,6 +3,8 @@
     Lopputili
     </a>
 </li>
+
+{% if session.logged_in %}
 <li>
     <a href="/">Yleisnäkymä</a>
 </li>
@@ -18,6 +20,11 @@
 <li>
     <a href="/settings">Asetukset</a>
 </li>
+<li>
+    <a href="/logout">Kirjaudu ulos</a>
+</li>
+{% endif %}
+<hr>
 <li>
     <a href="/esittelysivu">Esittelysivu</a>
 </li>
