@@ -1,0 +1,26 @@
+{
+  "name": "lopputili-frontend",
+  "version": "0.0.1",
+  "homepage": "https://github.com/theikkila/lopputili",
+  "authors": [
+    "Teemu Heikkilä <teemu.heikkila@pistoke.org>"
+  ],
+  "description": "Lopputili frontend",
+  "main": "app.js",
+  "keywords": [
+    "Lopputili",
+    "frontend"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.13"
+  }
+}

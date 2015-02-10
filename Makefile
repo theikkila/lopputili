@@ -10,7 +10,10 @@ venv: .venv/bin/activate
 	. .venv/bin/activate; pip install -Ur requirements.txt
 	touch .venv/bin/activate
 
-run: venv
+bower:
+	cd static/app; bower install
+
+run: venv bower
 	. .venv/bin/activate; honcho start
 
 docs: doc/toc cleardocs
