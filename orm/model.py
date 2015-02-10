@@ -30,21 +30,20 @@ class BaseModel(BaseMetaModel):
 			if not field.isvalid():
 				print("Error @", field_name)
 				raise exceptions.FieldNotValidError(field_name)
-			d[field_name] = field.value
+			d[field_name] = field.serialize()
 		return d
 
 	@classmethod
-	def deserialize(model, row):
+	def deserialize(model, raw, insert=False):
 		a = model()
-		for field in row:
-			getattr(a, '_'+field).value = row[field]
-		a.insert = False
+		for field in raw:
+			getattr(a, '_'+field).deserialize(raw[field])
+		a.insert = insert
 		return a
 
 	def save(self):
 		dbset(self)
 		serialized = self.serialize()
-
 		if self.insert:
 			self.insert = False
 			self.pk = self.db.insert(self.tableName(), serialized)

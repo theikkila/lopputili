@@ -20,5 +20,9 @@ class ModelCollection(object):
 		q = queryset(*args, **kwargs)
 		return ModelCollection([item for item in iter(self.arr) if q.filt(item)])
 
+	def serialize(self):
+		def seri(x): return x.serialize()
+		return list(map(seri, self.arr))
+
 	def __repr__(self):
 		return str(self.arr)

@@ -1,10 +1,32 @@
-from flask.views import View
-from flask import render_template
+from .listview import APIListView, APIDetailView
 from .login import login_required
+from ..models.receipt import Receipt, Commit
 
-class ReceiptsController(View):
-    methods = ['GET']
-    decorators = [login_required]
+class ReceiptsListController(APIListView):
+	methods = ['GET', 'POST']
+	decorators = [login_required]
 
-    def dispatch_request(self):
-        return render_template('receipts.html')
+	def getModel(self):
+		return Receipt
+
+class ReceiptsDetailController(APIDetailView):
+	methods = ['GET', 'PUT', 'DELETE']
+	decorators = [login_required]
+
+	def getModel(self):
+		return Receipt
+
+
+class CommitsListController(APIListView):
+	methods = ['GET', 'POST']
+	decorators = [login_required]
+
+	def getModel(self):
+		return Commit
+
+class CommitsDetailController(APIDetailView):
+	methods = ['GET', 'PUT', 'DELETE']
+	decorators = [login_required]
+
+	def getModel(self):
+		return Commit

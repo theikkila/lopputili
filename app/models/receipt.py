@@ -7,7 +7,7 @@ class Receipt(model.Model):
 	rid = fields.IntegerField()
 	owner = fields.ForeignKeyField(User)
 	commits = fields.HasField('Commit', 'receipt')
-	commit_date = fields.DateField()
+	commit_date = fields.DateTimeField()
 	description = fields.CharField(max_length=400, blank=True)
 
 	def __repr__(self):

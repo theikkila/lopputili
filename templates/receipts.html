@@ -5,6 +5,7 @@
 	<div class="col-md-12">
 		<h1>Kirjanpito</h1>
 		<p class="lead">Tässä näkymässä voit tarkastella, muokata, lisätä tai poistaa tositteitasi</p>
+    <a href="/receipts/create">Lisää tosite</a>
     <table class="table table-striped">
       <thead>
         <tr>
@@ -14,11 +15,13 @@
         </tr>
       </thead>
       <tbody>
+      {% for receipt in objects %}
           <tr>
-          <td>#</td>
-          <td>Päivämäärä</td>
-          <td>Tosite</td>
+          <td>{{receipt.rid}}</td>
+          <td>{{receipt.commit_date}}</td>
+          <td>{{receipt.description}}</td>
         </tr>
+      {% endfor %}
       </tbody>
     </table>
   </div>

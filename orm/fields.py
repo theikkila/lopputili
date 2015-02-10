@@ -1,6 +1,6 @@
 from weakref import WeakKeyDictionary
 
-
+from datetime import datetime, date
 
 class Field(object):
 	def __init__(self, blank=False):
@@ -12,6 +12,12 @@ class Field(object):
 		if not self.blank and self.value is None:
 			return False
 		return True
+
+	def serialize(self):
+		return self.value
+
+	def deserialize(self, value):
+		self.value = value
 
 class MetaField(object):
 	def __init__(self):
@@ -67,8 +73,27 @@ class PKField(Field):
 class DateTimeField(Field):
 	name = "DateTimeField"
 
+	def deserialize(self, value):
+		if isinstance(value, datetime):
+			self.value = value
+		else:
+			self.value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%fZ')
+
+	def serialize(self):
+		return self.value.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+	def isvalid(self):
+		if not super(DateTimeField, self).isvalid():
+			return False
+		return isinstance(self.value, datetime)
+
 class DateField(Field):
 	name = "DateField"
+
+	def isvalid(self):
+		if not super(DateField, self).isvalid():
+			return False
+		return isinstance(self.value, date)
 
 class CharField(Field):
 	name = "String"

@@ -5,7 +5,6 @@ from app.models.user import User
 def login_required(f):
 	"""Checks whether user is logged in or redirects login page"""
 	def decorator(*args, **kwargs):
-		print(session)
 		if not "logged_in" in session:
 			return redirect(url_for('login'))
 		return f(*args, **kwargs)
