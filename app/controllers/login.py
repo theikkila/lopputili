@@ -23,7 +23,7 @@ class LoginController(View):
 			user = a[0]
 			if user.is_valid_password(request.form['password']):
 				session['logged_in'] = user.pk
-				return redirect(url_for('receipts'))
+				return redirect(url_for('dashboard'))
 			else:
 				raise Exception("Invalid username or password")
 		except Exception as e:

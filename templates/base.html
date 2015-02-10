@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="lopputiliApp">
 
 <head>
 
@@ -55,7 +55,7 @@
                 {% endwith %}
 
                 {% block content %}
-                No content
+                <div ui-view></div>
                 {% endblock %}
             </div>
         </div>
@@ -66,6 +66,9 @@
 
     <!-- jQuery and angular -->
     <script src="{{ url_for('static', filename='app/bower_components/angular/angular.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='app/bower_components/lodash/dist/lodash.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='app/bower_components/restangular/dist/restangular.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='app/bower_components/angular-ui-router/release/angular-ui-router.min.js')}}"></script>
     <script src="{{ url_for('static', filename='app/app.js')}}"></script>
     <script src="{{ url_for('static', filename='js/jquery.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>

@@ -7,7 +7,7 @@ from app.models.user import User
 from app.models.receipt import Receipt, Commit
 from app.controllers.receipts import ReceiptsListController, ReceiptsDetailController, CommitsListController, CommitsDetailController
 from app.controllers.accounts import AccountsListController, AccountsDetailController
-from app.controllers.login import LoginController, logout
+from app.controllers.login import LoginController, logout, login_required
 
 from app.models.statistics import Visit
 
@@ -31,7 +31,7 @@ def FullRESTendpoint(app, name, listcontroller, detailcontroller):
 
 u = User(username="test", password="test").save()
 
-@app.route('/')
+@app.route('/visit')
 def hello_world():
 	s = Visit(useragent=request.headers.get('User-Agent'), time=datetime.datetime.now())
 	s.save()
@@ -52,9 +52,8 @@ def introduction():
 
 # Real routes
 
-@app.route('/settings')
-def settings():
-	return render_template('settings.html')
+def dashboard():
+	return render_template('base.html')
 
 @app.route('/contacts')
 def contacts():
@@ -68,6 +67,7 @@ def invoices():
 
 app.add_url_rule('/login', view_func=LoginController.as_view('login'))
 app.add_url_rule('/logout', 'logout', logout)
+app.add_url_rule('/', 'dashboard', login_required(dashboard))
 
 
 FullRESTendpoint(app, 'receipts', ReceiptsListController, ReceiptsDetailController)
