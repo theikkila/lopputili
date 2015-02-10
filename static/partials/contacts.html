@@ -36,10 +36,10 @@
       <tbody>
           <tr ng-repeat="contact in contacts">
             <td><span editable-text="contact.name" onaftersave="updateContact(contact)">{{contact.name}}</span></td>
-            <td><span editable-text="contact.address" onaftersave="updateContact(contact)">{{contact.address || '-'}}</span></td>
-            <td><span editable-text="contact.city" onaftersave="updateContact(contact)">{{contact.city || '-'}}</span></td>
-            <td><span editable-text="contact.zip_code" onaftersave="updateContact(contact)">{{contact.zip_code || '-'}}</span></td>
-            <td><span editable-text="contact.email" onaftersave="updateContact(contact)">{{contact.email || '-'}}</span></td>
+            <td><span editable-text="contact.address" onaftersave="updateContact(contact)">{{contact.address || '----'}}</span></td>
+            <td><span editable-text="contact.city" onaftersave="updateContact(contact)">{{contact.city || '----'}}</span></td>
+            <td><span editable-text="contact.zip_code" onaftersave="updateContact(contact)">{{contact.zip_code || '----'}}</span></td>
+            <td><span editable-text="contact.email" onaftersave="updateContact(contact)">{{contact.email || '----'}}</span></td>
             <td><button ng-click="removeContact(contact)" class="btn btn-danger btn-xs">P</button></td>
         </tr>
       </tbody>
