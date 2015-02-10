@@ -4,9 +4,11 @@ from flask import Flask, request, render_template
 from orm import ORM
 from app.models.account import Account
 from app.models.user import User
+from app.models.contact import Contact
 from app.models.receipt import Receipt, Commit
 from app.controllers.receipts import ReceiptsListController, ReceiptsDetailController, CommitsListController, CommitsDetailController
 from app.controllers.accounts import AccountsListController, AccountsDetailController
+from app.controllers.contacts import ContactsListController, ContactsDetailController
 from app.controllers.login import LoginController, logout, login_required
 
 from app.models.statistics import Visit
@@ -21,6 +23,7 @@ o.registerModel(User)
 o.registerModel(Visit)
 o.registerModel(Receipt)
 o.registerModel(Commit)
+o.registerModel(Contact)
 o.initTables()
 
 def FullRESTendpoint(app, name, listcontroller, detailcontroller):
@@ -55,10 +58,6 @@ def introduction():
 def dashboard():
 	return render_template('base.html')
 
-@app.route('/contacts')
-def contacts():
-	return render_template('contacts.html')
-
 @app.route('/invoices')
 def invoices():
 	return render_template('invoices.html')
@@ -73,6 +72,7 @@ app.add_url_rule('/', 'dashboard', login_required(dashboard))
 FullRESTendpoint(app, 'receipts', ReceiptsListController, ReceiptsDetailController)
 FullRESTendpoint(app, 'commits', CommitsListController, CommitsDetailController)
 FullRESTendpoint(app, 'accounts', AccountsListController, AccountsDetailController)
+FullRESTendpoint(app, 'contacts', ContactsListController, ContactsDetailController)
 
 app.secret_key = os.getenv('SECRET_KEY', 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT')
 

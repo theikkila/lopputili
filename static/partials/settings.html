@@ -60,11 +60,11 @@
         </tr>
       </thead>
       <tbody>
-          <tr>
-          <td>Nimi</td>
-          <td>Koodi</td>
-          <td>Kuvaus</td>
-          <td>Vastaava/Vastattava</td>
+          <tr ng-repeat="account in accounts">
+          <td>{{account.name}}</td>
+          <td>{{account.aid}}</td>
+          <td>{{account.description}}</td>
+          <td>{{account.side}}</td>
         </tr>
       </tbody>
     </table>

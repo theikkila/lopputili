@@ -2,19 +2,45 @@
 	<div class="col-md-12">
 		<h1>Yhteystiedot</h1>
 		<p class="lead">Tässä näkymässä voit tarkastella, muokata, lisätä tai poistaa yhteystietojasi</p>
+    <form>
+    <div class="form-group">
+      <label class="control-label" for="name">Nimi
+        <input class="form-control input-md col-md-12" name="name" type="text" ng-model="form.name" required>
+      </label>
+    </div>
+    <label class="control-label" for="address">Osoite
+    <input class="form-control input-md" name="address" type="text" ng-model="form.address">
+    </label>
+
+    <label class="control-label" for="zip">Postinumero
+    <input class="form-control input-md" name="zip" type="text" ng-model="form.zip_code">
+    </label>
+    <label class="control-label" for="city">Postitoimipaikka
+    <input class="form-control input-md" name="city" type="text" ng-model="form.city">
+    </label>
+    <label class="control-label" for="email">Sähköpostiosoite
+    <input class="form-control input-md" name="email" type="text" ng-model="form.email">
+    </label>
+    <button class="btn btn-primary" ng-click="addContact(form)">Lisää yhteystieto</button>
+    </form>
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>#</th>
           <th>Nimi</th>
           <th>Osoite</th>
+          <th>Postitoimipaikka</th>
+          <th>Postinumero</th>
+          <th>Email</th>
         </tr>
       </thead>
       <tbody>
-          <tr>
-          <td>#</td>
-          <td>Nimi</td>
-          <td>Osoite</td>
+          <tr ng-repeat="contact in contacts">
+            <td>{{contact.name}}</td>
+            <td>{{contact.address || '-'}}</td>
+            <td>{{contact.city || '-'}}</td>
+            <td>{{contact.zip_code || '-'}}</td>
+            <td>{{contact.email || '-'}}</td>
+            <td><button ng-click="removeContact(contact)" class="btn btn-danger btn-xs">P</button></td>
         </tr>
       </tbody>
     </table>
