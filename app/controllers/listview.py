@@ -58,10 +58,11 @@ class APIDetailView(MethodView):
 
 	def put(self, pk, field=None):
 		try:
-			populated_model = Model.deserialize(request.json)
+			populated_model = self.getModel().deserialize(request.json)
 			populated_model.save()
-			resp.jsonify(populated_model.serialize())
+			resp = jsonify(populated_model.serialize())
 			resp.status_code = 200
+			return resp
 
 		except FieldNotValidError as e:
 			resp = jsonify({"error": "Field '" + str(e) + "' is not valid!", "code": 400})

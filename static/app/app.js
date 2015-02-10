@@ -1,5 +1,9 @@
-var lopputiliApp = angular.module('lopputiliApp', ['restangular', 'ui.router']);
+var lopputiliApp = angular.module('lopputiliApp', ['restangular', 'ui.router', 'xeditable']);
 
+
+lopputiliApp.run(function(editableOptions) {
+  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
+});
 
 lopputiliApp.config(function($stateProvider, $urlRouterProvider) {
   //
@@ -64,13 +68,11 @@ lopputiliApp.controller('ReceiptsCtrl', function ($scope, Restangular) {
   });
   Restangular.all('receipts').getList().then(function (receipts) {
     $scope.receipts = receipts;
-    console.log(receipts);
   });
   $scope.editReceipt = function edit_receipt (receipt) {
     $scope.selected = receipt;
     receipt.all('commits').getList().then(function (commits) {
       $scope.commits = commits;
-      console.log("Commits", commits);
     });
   };
 });
@@ -87,7 +89,6 @@ lopputiliApp.controller('ContactsCtrl', function ($scope, Restangular) {
       $scope.form = {};
       alertify.success("Yhteystieto lisätty!");
     }, function(error){
-      console.log(error);
       alertify.error("Yhteystietoa ei voitu lisätä! ("+error.data.error+")");
     });
   };
@@ -98,6 +99,10 @@ lopputiliApp.controller('ContactsCtrl', function ($scope, Restangular) {
     }, function(){
       alertify.error("Yhteystietoa ei voitu poistaa!");
     });
+  };
+  $scope.updateContact = function update_contact (contact) {
+    contact.save();
+    return true;
   };
 });
 

@@ -35,11 +35,11 @@
       </thead>
       <tbody>
           <tr ng-repeat="contact in contacts">
-            <td>{{contact.name}}</td>
-            <td>{{contact.address || '-'}}</td>
-            <td>{{contact.city || '-'}}</td>
-            <td>{{contact.zip_code || '-'}}</td>
-            <td>{{contact.email || '-'}}</td>
+            <td><span editable-text="contact.name" onaftersave="updateContact(contact)">{{contact.name}}</span></td>
+            <td><span editable-text="contact.address" onaftersave="updateContact(contact)">{{contact.address || '-'}}</span></td>
+            <td><span editable-text="contact.city" onaftersave="updateContact(contact)">{{contact.city || '-'}}</span></td>
+            <td><span editable-text="contact.zip_code" onaftersave="updateContact(contact)">{{contact.zip_code || '-'}}</span></td>
+            <td><span editable-text="contact.email" onaftersave="updateContact(contact)">{{contact.email || '-'}}</span></td>
             <td><button ng-click="removeContact(contact)" class="btn btn-danger btn-xs">P</button></td>
         </tr>
       </tbody>
