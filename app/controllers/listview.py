@@ -31,7 +31,7 @@ class APIDetailView(MethodView):
 		obj = self.getModel().get(pk)
 		if field and hasattr(obj, field) and hasattr(obj, '_'+field) and  isinstance(getattr(obj, '_'+field), HasField):
 			ret = {}
-			ret[field] = getattr(obj, field).serialize()
+			ret['data'] = getattr(obj, field).serialize()
 			resp = jsonify(ret)
 			resp.status_code = 200
 			return resp

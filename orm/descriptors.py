@@ -18,8 +18,8 @@ class HasFieldDescriptor(object):
 		self.cached = None
 
 	def __get__(self, instance=None, owner=None):
-		if self.cached:
-			return self.cached
+		#if self.cached:
+		#	return self.cached
 		at = getattr(instance, '_'+self.attrib)
 		self.cached = at.all()
 		return self.cached

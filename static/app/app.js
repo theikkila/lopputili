@@ -53,8 +53,22 @@ lopputiliApp.config(function(RestangularProvider) {
   });
 
 lopputiliApp.controller('ReceiptsCtrl', function ($scope, Restangular) {
+  $scope.accounts_by_pk = [];
+  Restangular.all('accounts').getList().then(function (accounts) {
+    $scope.accounts = accounts;
+    accounts.forEach(function(account){
+      $scope.accounts_by_pk[account.pk] = account;
+    });
+  });
   Restangular.all('receipts').getList().then(function (receipts) {
     $scope.receipts = receipts;
     console.log(receipts);
-  })
+  });
+  $scope.editReceipt = function edit_receipt (receipt) {
+    $scope.selected = receipt;
+    receipt.all('commits').getList().then(function (commits) {
+      $scope.commits = commits;
+      console.log("Commits", commits);
+    });
+  };
 });

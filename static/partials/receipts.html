@@ -2,6 +2,21 @@
 	<div class="col-md-12">
 		<h1>Kirjanpito</h1>
 		<p class="lead">Tässä näkymässä voit tarkastella, muokata, lisätä tai poistaa tositteitasi</p>
+    <div ng-show="selected">
+    <h3>{{selected.rid}} <small>{{selected.commit_date}}</small></h3>
+    <p>{{selected.description}}</p>
+      <table class="table table-condensed">
+        <thead>
+        <tr><th>Credet</th><th>Debet</th><th>Tili</th></tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="commit in commits">
+          <td>{{commit.credit_amount}}</td><td>{{commit.debet_amount}}</td><td>{{accounts_by_pk[commit.account].name}}</td>
+        </tr>
+        <tr ng-show="!commits.length"><td>Credet</td><td>Debet</td><td>Tili</td></tr>
+        </tbody>
+      </table>
+    </div>
     <table class="table table-striped">
       <thead>
         <tr>
@@ -12,7 +27,7 @@
       </thead>
       <tbody>
           <tr ng-repeat="receipt in receipts">
-          <td>{{receipt.rid}}</td>
+          <td><button class="btn btn-xs" ng-click="editReceipt(receipt)">{{receipt.rid}}</button></td>
           <td>{{receipt.commit_date}}</td>
           <td>{{receipt.description}}</td>
         </tr>
