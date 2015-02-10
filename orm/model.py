@@ -53,7 +53,7 @@ class BaseModel(BaseMetaModel):
 
 	def delete(self):
 		dbset(self)
-		self.db.delete(self.tableName(), self.pk)
+		print(self.db.delete(self.tableName(), self.pk))
 		return self
 
 	@classmethod

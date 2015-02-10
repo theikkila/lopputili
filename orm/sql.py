@@ -75,9 +75,9 @@ class Database:
 		self.cursor = self.conn.cursor()
 		q = self.parse_query(raw_query)
 
+		print(q)
 		params = self.parse_params(raw_params)
 		if params:
-			print(q)
 			res = self.cursor.execute(q, params)
 		else:
 			res = self.cursor.execute(q)	
@@ -115,7 +115,7 @@ class Database:
 
 	def delete(self, table, pk):
 		raw_query = "DELETE FROM %s WHERE pk = ?" % table
-		res = self.query(raw_query, pk)
+		res = self.query(raw_query, pk, True)
 		return res
 
 	def getById(self, table, pk):

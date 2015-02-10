@@ -47,7 +47,7 @@ class APIDetailView(MethodView):
 
 	def delete(self, pk, field=None):
 		obj = self.getModel().get(pk)
-		resp.jsonify(obj.serialize())
+		resp = jsonify(obj.serialize())
 		obj.delete()
 		resp.status_code = 200
 		return resp

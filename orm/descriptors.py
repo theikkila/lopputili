@@ -15,10 +15,14 @@ class FieldDescriptor(object):
 class HasFieldDescriptor(object):
 	def __init__(self, attrib_name):
 		self.attrib = attrib_name
+		self.cached = None
 
 	def __get__(self, instance=None, owner=None):
+		if self.cached:
+			return self.cached
 		at = getattr(instance, '_'+self.attrib)
-		return at.all()
+		self.cached = at.all()
+		return self.cached
 
 	def __set__(self, instance, value):
 		#at = getattr(instance, '_'+self.attrib)

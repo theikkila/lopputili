@@ -23,6 +23,12 @@ o.registerModel(Receipt)
 o.registerModel(Commit)
 o.initTables()
 
+def FullRESTendpoint(app, name, listcontroller, detailcontroller):
+	app.add_url_rule('/api/'+name, view_func=listcontroller.as_view(name))
+	app.add_url_rule('/api/'+name+'/<pk>', view_func=detailcontroller.as_view(name+'_detail'))
+	app.add_url_rule('/api/'+name+'/<pk>/<field>', view_func=detailcontroller.as_view(name+'_detail_field'))
+
+
 u = User(username="test", password="test").save()
 
 @app.route('/')
@@ -63,19 +69,10 @@ def invoices():
 app.add_url_rule('/login', view_func=LoginController.as_view('login'))
 app.add_url_rule('/logout', 'logout', logout)
 
-app.add_url_rule('/api/receipts', view_func=ReceiptsListController.as_view('receipts'))
-app.add_url_rule('/api/receipts/<pk>', view_func=ReceiptsDetailController.as_view('receipts_detail'))
-app.add_url_rule('/api/receipts/<pk>/<field>', view_func=ReceiptsDetailController.as_view('receipts_detail_field'))
 
-app.add_url_rule('/api/commits', view_func=CommitsListController.as_view('commits'))
-app.add_url_rule('/api/commits/<pk>', view_func=CommitsDetailController.as_view('commits_detail'))
-app.add_url_rule('/api/commits/<pk>/<field>', view_func=CommitsDetailController.as_view('commits_detail_field'))
-
-
-app.add_url_rule('/api/accounts', view_func=AccountsListController.as_view('accounts'))
-app.add_url_rule('/api/accounts/<pk>', view_func=AccountsDetailController.as_view('accounts_detail'))
-app.add_url_rule('/api/accounts/<pk>/<field>', view_func=AccountsDetailController.as_view('accounts_detail_field'))
-
+FullRESTendpoint(app, 'receipts', ReceiptsListController, ReceiptsDetailController)
+FullRESTendpoint(app, 'commits', CommitsListController, CommitsDetailController)
+FullRESTendpoint(app, 'accounts', AccountsListController, AccountsDetailController)
 
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
