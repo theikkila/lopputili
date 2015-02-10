@@ -90,6 +90,15 @@ class DateTimeField(Field):
 class DateField(Field):
 	name = "DateField"
 
+	def deserialize(self, value):
+		if isinstance(value, datetime):
+			self.value = value
+		else:
+			self.value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%fZ')
+
+	def serialize(self):
+		return self.value.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
 	def isvalid(self):
 		if not super(DateField, self).isvalid():
 			return False
@@ -113,4 +122,12 @@ class IntegerField(Field):
 		if not super(IntegerField, self).isvalid():
 			return False
 		return isinstance(self.value, int)
+
+class DecimalField(Field):
+	name = "Decimal"
+
+	def isvalid(self):
+		if not super(DecimalField, self).isvalid():
+			return False
+		return isinstance(self.value, float) or isinstance(self.value, int)
 

@@ -6,12 +6,13 @@ from app.models.account import Account
 from app.models.user import User
 from app.models.contact import Contact
 from app.models.receipt import Receipt, Commit
+from app.models.invoice import Invoice
 from app.controllers.receipts import ReceiptsListController, ReceiptsDetailController, CommitsListController, CommitsDetailController
 from app.controllers.accounts import AccountsListController, AccountsDetailController
 from app.controllers.contacts import ContactsListController, ContactsDetailController
+from app.controllers.invoices import InvoicesListController, InvoicesDetailController
 from app.controllers.login import LoginController, logout, login_required
 
-from app.models.statistics import Visit
 
 import markdown2, datetime
 
@@ -20,10 +21,10 @@ app = Flask(__name__)
 o = ORM()
 o.registerModel(Account)
 o.registerModel(User)
-o.registerModel(Visit)
 o.registerModel(Receipt)
 o.registerModel(Commit)
 o.registerModel(Contact)
+o.registerModel(Invoice)
 o.initTables()
 
 def FullRESTendpoint(app, name, listcontroller, detailcontroller):
@@ -33,14 +34,6 @@ def FullRESTendpoint(app, name, listcontroller, detailcontroller):
 
 
 u = User(username="test", password="test").save()
-
-@app.route('/visit')
-def hello_world():
-	s = Visit(useragent=request.headers.get('User-Agent'), time=datetime.datetime.now())
-	s.save()
-	
-	a = Visit.all()
-	return render_template('hello.html', uas=sorted(a, key=lambda visit: visit.time)[len(a)-10:], count=len(a))
 
 @app.route('/connectiontest')
 def connectiontest():
@@ -58,11 +51,6 @@ def introduction():
 def dashboard():
 	return render_template('base.html')
 
-@app.route('/invoices')
-def invoices():
-	return render_template('invoices.html')
-
-
 
 app.add_url_rule('/login', view_func=LoginController.as_view('login'))
 app.add_url_rule('/logout', 'logout', logout)
@@ -73,6 +61,7 @@ FullRESTendpoint(app, 'receipts', ReceiptsListController, ReceiptsDetailControll
 FullRESTendpoint(app, 'commits', CommitsListController, CommitsDetailController)
 FullRESTendpoint(app, 'accounts', AccountsListController, AccountsDetailController)
 FullRESTendpoint(app, 'contacts', ContactsListController, ContactsDetailController)
+FullRESTendpoint(app, 'invoices', InvoicesListController, InvoicesDetailController)
 
 app.secret_key = os.getenv('SECRET_KEY', 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT')
 
