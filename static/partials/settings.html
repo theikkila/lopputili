@@ -73,10 +73,10 @@
       </thead>
       <tbody>
           <tr ng-repeat="account in accounts">
-          <td>{{account.name}}</td>
-          <td>{{account.aid}}</td>
-          <td>{{account.description}}</td>
-          <td>{{account.side}}</td>
+          <td><span editable-text="account.name" onaftersave="updateAccount(account)">{{account.name}}</span></td>
+          <td><span editable-text="account.aid" onaftersave="updateAccount(account)">{{account.aid}}</span></td>
+          <td><span editable-text="account.description" onaftersave="updateAccount(account)">{{account.description}}</span></td>
+          <td><span editable-select="account.side" e-ng-options="s.value as s.text for s in sides" onaftersave="updateAccount(account)">{{account.side}}</span></td>
           <td><button class="btn btn-xs btn-danger" ng-click="removeAccount(account)">P</button></td>
         </tr>
       </tbody>

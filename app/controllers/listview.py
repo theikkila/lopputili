@@ -1,20 +1,23 @@
 from flask.views import MethodView
-from flask import request
+from flask import request, session
 from flask import jsonify
 from orm.fields import HasField
 from orm.exceptions import FieldNotValidError, ObjectNotFoundError
+from .login import api_login_required
 
 '''
  These two classes implements basic JSON REST-api
 '''
 
 class APIListView(MethodView):
+	methods = ['GET', 'POST']
+	decorators = [api_login_required]
 
 	def getModel(self):
 		raise Exception("Model not defined")
 
 	def get(self):
-		objects = self.getModel().all().serialize()
+		objects = self.getModel().filter(owner__exact=session['logged_in']).serialize()
 		resp = jsonify({"data":objects})
 		resp.status_code = 200
 		return resp
@@ -23,6 +26,7 @@ class APIListView(MethodView):
 		Model = self.getModel()
 		try:
 			populated_model = Model.deserialize(request.json, True)
+			populated_model.owner = session['logged_in']
 			populated_model.save()
 			resp = jsonify(populated_model.serialize())
 			resp.status_code = 201 # created
@@ -38,6 +42,8 @@ class APIListView(MethodView):
 			return resp
 
 class APIDetailView(MethodView):
+	methods = ['GET', 'PUT', 'DELETE']
+	decorators = [api_login_required]
 
 	def getModel(self):
 		raise Exception("Model not defined")
@@ -45,6 +51,8 @@ class APIDetailView(MethodView):
 	def get(self, pk, field=None):
 		try:
 			obj = self.getModel().get(pk)
+			if obj.owner.pk != session['logged_in']:
+				raise ObjectNotFoundError("Access denied")
 		except ObjectNotFoundError as e:
 			resp = jsonify({"error": "Object not found", "code": 404})
 			resp.status_code = 404
@@ -62,7 +70,11 @@ class APIDetailView(MethodView):
 
 	def put(self, pk, field=None):
 		try:
+			obj = self.getModel().get(pk)
+			if obj.owner.pk != session['logged_in']:
+				raise ObjectNotFoundError("Access denied")
 			populated_model = self.getModel().deserialize(request.json)
+			populated_model.owner = session['logged_in']
 			populated_model.save()
 			resp = jsonify(populated_model.serialize())
 			resp.status_code = 200
@@ -79,8 +91,15 @@ class APIDetailView(MethodView):
 			return resp
 
 	def delete(self, pk, field=None):
-		obj = self.getModel().get(pk)
-		resp = jsonify(obj.serialize())
-		obj.delete()
-		resp.status_code = 200
-		return resp
+		try:
+			obj = self.getModel().get(pk)
+			if obj.owner != session['logged_in']:
+				raise ObjectNotFoundError
+			resp = jsonify(obj.serialize())
+			obj.delete()
+			resp.status_code = 200
+			return resp
+		except Exception as e:
+			resp = jsonify({"error": str(e), "code": 400})
+			resp.status_code = 400
+			return resp

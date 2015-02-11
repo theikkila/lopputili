@@ -1,9 +1,11 @@
 from orm import model
 from orm import fields
 from .contact import Contact
+from .user import User
 
 class Invoice(model.Model):
 	title = fields.CharField(max_length=200)
+	owner = fields.ForeignKeyField(User)
 	description = fields.CharField(max_length=400, blank=True)
 	contact = fields.ForeignKeyField(Contact, blank=True)
 	created = fields.DateTimeField()

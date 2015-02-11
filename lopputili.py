@@ -1,16 +1,18 @@
 # encoding: utf-8
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, session
 from orm import ORM
 from app.models.account import Account
 from app.models.user import User
 from app.models.contact import Contact
 from app.models.receipt import Receipt, Commit
 from app.models.invoice import Invoice
+from app.models.setting import Setting
 from app.controllers.receipts import ReceiptsListController, ReceiptsDetailController, CommitsListController, CommitsDetailController
 from app.controllers.accounts import AccountsListController, AccountsDetailController
 from app.controllers.contacts import ContactsListController, ContactsDetailController
 from app.controllers.invoices import InvoicesListController, InvoicesDetailController
+from app.controllers.settings import SettingsController
 from app.controllers.login import LoginController, logout, login_required
 
 
@@ -25,6 +27,7 @@ o.registerModel(Receipt)
 o.registerModel(Commit)
 o.registerModel(Contact)
 o.registerModel(Invoice)
+o.registerModel(Setting)
 o.initTables()
 
 def FullRESTendpoint(app, name, listcontroller, detailcontroller):
@@ -33,7 +36,7 @@ def FullRESTendpoint(app, name, listcontroller, detailcontroller):
 	app.add_url_rule('/api/'+name+'/<pk>/<field>', view_func=detailcontroller.as_view(name+'_detail_field'))
 
 
-u = User(username="test", password="test").save()
+u = User(username="test2", password="test").save()
 
 @app.route('/connectiontest')
 def connectiontest():
@@ -49,12 +52,13 @@ def introduction():
 # Real routes
 
 def dashboard():
-	return render_template('base.html')
+	return render_template('base.html', owner_pk=session['logged_in'])
 
 
 app.add_url_rule('/login', view_func=LoginController.as_view('login'))
 app.add_url_rule('/logout', 'logout', logout)
 app.add_url_rule('/', 'dashboard', login_required(dashboard))
+app.add_url_rule('/api/settings', view_func=SettingsController.as_view('settings'))
 
 
 FullRESTendpoint(app, 'receipts', ReceiptsListController, ReceiptsDetailController)

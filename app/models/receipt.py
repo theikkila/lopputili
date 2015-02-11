@@ -14,6 +14,7 @@ class Receipt(model.Model):
 		return str(self.rid)
 
 class Commit(model.Model):
+	owner = fields.ForeignKeyField(User)
 	receipt = fields.ForeignKeyField(Receipt)
 	account = fields.ForeignKeyField(Account)
 	credit_amount = fields.IntegerField()

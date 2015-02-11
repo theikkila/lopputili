@@ -101,7 +101,11 @@ lopputiliApp.controller('ContactsCtrl', function ($scope, Restangular) {
     });
   };
   $scope.updateContact = function update_contact (contact) {
-    contact.save();
+    contact.save().then(function () {
+      alertify.success("Yhteystieto tallennettu!");
+    }, function () {
+      alertify.error("Yhteystiedon tallentaminen epäonnistui");
+    });
     return true;
   };
 });
@@ -128,5 +132,18 @@ lopputiliApp.controller('SettingsCtrl', function ($scope, Restangular) {
     }, function(){
       alertify.error("Tiliä ei voitu poistaa!");
     });
+  };
+  $scope.sides = [
+    {value: "Vastaava", text: "Vastaava"},
+    {value: "Vastattava", text: "Vastattava"}
+  ];
+  $scope.updateAccount = function update_account (account) {
+    account.aid = parseInt(account.aid);
+    account.save().then(function () {
+      alertify.success("Tili tallennettu!");
+    }, function () {
+      alertify.error("Tilin tallentaminen epäonnistui");
+    });
+    return true;
   };
 });
