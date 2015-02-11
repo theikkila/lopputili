@@ -114,6 +114,20 @@ lopputiliApp.controller('SettingsCtrl', function ($scope, Restangular) {
   Restangular.all('accounts').getList().then(function (accounts) {
     $scope.accounts = accounts;
   });
+
+
+  Restangular.one('settings').get().then(function (settings) {
+    $scope.settings = settings;
+  });
+
+  $scope.saveSettings = function save_settings () {
+    Restangular.one('settings').customPUT($scope.settings).then(function(){
+      alertify.success("Asetukset tallennettu!"); },
+      function(){
+      alertify.error("Asetuksien tallentaminen epäonnistui");
+    });
+  };
+
   $scope.addAccount = function add_account (form) {
     form.aid = parseInt(form.aid);
     Restangular.all('accounts').post(form).then(function(account){

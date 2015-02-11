@@ -7,40 +7,40 @@
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="name">Yrityksen / Yhteisön nimi</label>  
-  <div class="col-md-8">
-  <input id="name" name="name" type="text" placeholder="Firma Oy" class="form-control input-md" required="">
+  <label class="col-md-2 control-label" for="name">Yrityksen / Yhteisön nimi</label>  
+  <div class="col-md-10">
+  <input id="name" name="name" ng-model="settings.company_name" type="text" placeholder="Firma Oy" class="form-control input-md">
   <span class="help-block">Kirjoita tähän yrityksen tai yhteisön nimi</span>  
   </div>
 </div>
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="vatcode">Y-tunnus</label>  
-  <div class="col-md-8">
-  <input id="vatcode" name="vatcode" type="text" placeholder="232323-1" class="form-control input-md" required="">
+  <label class="col-md-2 control-label" for="vatcode">Y-tunnus</label>  
+  <div class="col-md-10">
+  <input id="vatcode" name="vatcode" ng-model="settings.vat_code" type="text" placeholder="232323-1" class="form-control input-md">
   <span class="help-block">Yrityksen tai yhteisön Y-tunnus</span>  
   </div>
 </div>
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="iban">IBAN</label>  
-  <div class="col-md-8">
-  <input id="iban" name="iban" type="text" placeholder="FI000 00000 0000000 00000" class="form-control input-md" required="">
+  <label class="col-md-2 control-label" for="iban">IBAN</label>  
+  <div class="col-md-10">
+  <input id="iban" name="iban" ng-model="settings.iban" type="text" placeholder="FI000 00000 0000000 00000" class="form-control input-md">
   <span class="help-block">Tilinumero joka näkyy laskulla</span>  
   </div>
 </div>
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="bic">BIC</label>  
-  <div class="col-md-8">
-  <input id="bic" name="bic" type="text" placeholder="OKOYFIHH" class="form-control input-md" required="">
+  <label class="col-md-2 control-label" for="bic">BIC</label>  
+  <div class="col-md-10">
+  <input id="bic" name="bic" ng-model="settings.bic" type="text" placeholder="OKOYFIHH" class="form-control input-md">
   <span class="help-block">BIC-koodi joka näkyy laskulla</span>  
   </div>
 </div>
-
+<button class="btn btn-success pull-right" ng-click="saveSettings()">Tallenna</button>
 </form>
 
 	</div>
