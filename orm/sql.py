@@ -75,7 +75,7 @@ class Database:
 		self.cursor = self.conn.cursor()
 		q = self.parse_query(raw_query)
 
-		print(q)
+		print(q, raw_params)
 		params = self.parse_params(raw_params)
 		if params:
 			res = self.cursor.execute(q, params)
@@ -110,7 +110,7 @@ class Database:
 		del serialized['pk']
 		updatepairs = ', '.join([key+" = ?" for key in list(serialized.keys())])
 		raw_query = "UPDATE %s SET %s WHERE pk = ?" % (table, updatepairs)
-		res = self.query(raw_query, list(serialized.values())+[pk])
+		res = self.query(raw_query, list(serialized.values())+[pk], True)
 		return res
 
 	def delete(self, table, pk):
