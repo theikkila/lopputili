@@ -1,5 +1,5 @@
 from flask.views import View
-from flask import render_template, session, redirect, url_for, request, flash
+from flask import render_template, session, redirect, url_for, request, flash, jsonify
 from app.models.user import User
 
 def login_required(f):
@@ -7,6 +7,16 @@ def login_required(f):
 	def decorator(*args, **kwargs):
 		if not "logged_in" in session:
 			return redirect(url_for('login'))
+		return f(*args, **kwargs)
+	return decorator
+
+def api_login_required(f):
+	"""Checks whether user is logged in or returns 403"""
+	def decorator(*args, **kwargs):
+		if not "logged_in" in session:
+			resp = jsonify({"error":"Not authorized!", "code":403})
+			resp.status_code = 403
+			return resp
 		return f(*args, **kwargs)
 	return decorator
 

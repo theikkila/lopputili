@@ -18,6 +18,7 @@ class Invoice(model.Model):
 	summ = fields.DecimalField()
 	info1 = fields.CharField(max_length=200, blank=True)
 	info2 = fields.CharField(max_length=200, blank=True)
+	status = fields.CharField(max_length=40)
 
 	def __repr__(self):
 		return self.title
