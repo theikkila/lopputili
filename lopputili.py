@@ -35,8 +35,10 @@ def FullRESTendpoint(app, name, listcontroller, detailcontroller):
 	app.add_url_rule('/api/'+name+'/<pk>', view_func=detailcontroller.as_view(name+'_detail'))
 	app.add_url_rule('/api/'+name+'/<pk>/<field>', view_func=detailcontroller.as_view(name+'_detail_field'))
 
-
-u = User(username="test", password="test").save()
+try:
+	User.get(1)
+except:
+	u = User(username="test").set_password('test').save()
 
 @app.route('/connectiontest')
 def connectiontest():
