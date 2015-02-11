@@ -1,6 +1,7 @@
 from .query import Query, queryset
 
 class ModelCollection(object):
+	"""Implements model collection with behavior like arrays + utility functions and filtering"""
 	def __init__(self, arr):
 		self.arr = arr
 

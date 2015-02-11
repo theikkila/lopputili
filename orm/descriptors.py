@@ -1,4 +1,7 @@
 
+'''
+Descriptors are "proxy" for fields (pythonic way to do getters and setters)
+'''
 
 
 class FieldDescriptor(object):

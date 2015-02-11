@@ -4,6 +4,10 @@ from flask import jsonify
 from orm.fields import HasField
 from orm.exceptions import FieldNotValidError, ObjectNotFoundError
 
+'''
+ These two classes implements basic JSON REST-api
+'''
+
 class APIListView(MethodView):
 
 	def getModel(self):

@@ -1,4 +1,8 @@
 
+'''
+This file contains field-conversions from database agnostic format to (sqlite/postgres)-format
+'''
+
 data_types_sqlite = {
     'AutoField': 'integer',
     'ForeignKeyField': 'integer, foreign key(%(key)s) references %(tablename)s(pk) on delete cascade',

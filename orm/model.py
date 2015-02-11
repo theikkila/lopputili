@@ -8,6 +8,14 @@ import datetime
 from . import modelmeta
 BaseMetaModel = modelmeta.BaseMetaModel
 
+
+'''
+This file is full of metaprogramming magic
+
+Basicly BaseModel is constructed by metaclass (BaseMetaModel) and in BaseModels constructor the fields are mapped correctly.
+Also BaseModel implements basic functionality of Models
+'''
+
 def dbset(model):
 	if model.db is None:
 		raise exceptions.ModelNotRegisteredError		
@@ -25,10 +33,11 @@ class BaseModel(BaseMetaModel):
 
 	def serialize(self):
 		d = {}
+		# Iterate through all fields, check if they are valid and serialize them.
+		# Return populated dict.
 		for field_name in self.getfields():
 			field = getattr(self, '_'+field_name)
 			if not field.isvalid():
-				print("Error @", field_name)
 				raise exceptions.FieldNotValidError(field_name)
 			d[field_name] = field.serialize()
 		return d
@@ -97,8 +106,6 @@ class BaseModel(BaseMetaModel):
 
 	@classmethod
 	def getfields(model):
-		#field_names = [field for field in dir(model) if isinstance(getattr(model, field), fields.Field)]
-		#field_names = map(lambda field: field[1:], field_names)
 		return model.fields
 
 	@classmethod
