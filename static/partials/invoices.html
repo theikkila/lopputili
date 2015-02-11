@@ -2,21 +2,80 @@
 	<div class="col-md-12">
 		<h1>Laskutus</h1>
 		<p class="lead">Tässä näkymässä voit tarkastella, muokata, lisätä tai poistaa laskuja</p>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Lasku</th>
-          <th>Asiakas</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr>
-          <td>#</td>
-          <td>Lasku</td>
-          <td>Asiakas</td>
-        </tr>
-      </tbody>
-    </table>
+    <button ng-click="toggleInvoiceEdit()" class="btn btn-info">Avaa/Sulje laskueditori</button>
+    <div ng-show="invoice_edit_show">
+      <h3>Laskueditori</h3>
+      <div class="row-fluid">
+        <div class="form-group col-md-4">
+          <input type="text" ng-model="invoice.title" placeholder="Otsikko" class="form-control input-md">
+        </div>
+        <div class="form-group col-md-3">
+          <input type="date" ng-model="invoice.created" placeholder="PVM" class="form-control input-md">
+        </div>
+        <div class="form-group col-md-3">
+          <input type="text" ng-model="invoice.invoice_id" placeholder="Laskun numero" class="form-control input-md">
+        </div>
+        <div class="form-group col-md-2">
+          <input type="text" ng-model="invoice.ref" placeholder="Viitenumero" class="form-control input-md">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="form-group col-md-12">
+          <textarea ng-model="invoice.description" placeholder="Kuvaus" class="form-control input-md"></textarea>
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="form-group col-md-4">
+          <input type="text" ng-model="invoice.contact" placeholder="Maksaja/Vastaanottaja" class="form-control input-md">
+        </div>
+        <div class="form-group col-md-4">
+          <input type="text" ng-model="invoice.our_ref" placeholder="Viitteemme" class="form-control input-md">
+        </div>
+        <div class="form-group col-md-4">
+          <input type="text" ng-model="invoice.your_ref" placeholder="Viitteenne" class="form-control input-md">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="form-group col-md-3">
+          <input type="text" ng-model="invoice.payment_type" placeholder="Maksutapa" class="form-control input-md">
+        </div>
+        <div class="form-group col-md-3">
+          <input type="text" ng-model="invoice.reclamation_time" placeholder="Huomautusaika" class="form-control input-md">
+        </div>
+        <div class="form-group col-md-3">
+          <input type="text" ng-model="invoice.penalty_interest" placeholder="Myöhästymiskorko" class="form-control input-md">
+        </div>
+        <div class="form-group col-md-3">
+          <input type="date" ng-model="invoice.due_date" placeholder="Eräpäivä" class="form-control input-md">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="form-group col-md-6">
+          <textarea ng-model="invoice.info1" placeholder="Tekstikenttä ennen tuoterivejä" class="form-control input-md"></textarea>
+        </div>
+        <div class="form-group col-md-6">
+        <textarea ng-model="invoice.info2" placeholder="Tekstikenttä tuoterivien jälkeen" class="form-control input-md"></textarea>
+        </div>
+      </div>
+      <button class="btn btn-primary" ng-click="saveInvoice(invoice)">Tallenna</button>
+    </div>
   </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Lasku</th>
+        <th>Asiakas</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="invoice in invoices">
+        <td><button class="btn" ng-click="selectInvoice(invoice)">{{invoice.invoice_id}}</button></td>
+        <td>{{invoice.title}}</td>
+        <td>{{contacts_by_pk[invoice.contact].name}}</td>
+        <td><button class="btn btn-danger btn-xs" ng-click="removeInvoice(invoice)">P</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 </div>

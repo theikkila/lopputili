@@ -93,7 +93,7 @@ class APIDetailView(MethodView):
 	def delete(self, pk, field=None):
 		try:
 			obj = self.getModel().get(pk)
-			if obj.owner != session['logged_in']:
+			if obj.owner.pk != session['logged_in']:
 				raise ObjectNotFoundError
 			resp = jsonify(obj.serialize())
 			obj.delete()

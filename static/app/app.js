@@ -19,6 +19,7 @@ lopputiliApp.config(function($stateProvider, $urlRouterProvider) {
   })
   .state('invoices', {
     url: "/invoices",
+    controller: 'InvoicesCtrl',
     templateUrl: k+"invoices.html"
   })
   .state('contacts', {
@@ -159,5 +160,58 @@ lopputiliApp.controller('SettingsCtrl', function ($scope, Restangular) {
       alertify.error("Tilin tallentaminen epäonnistui");
     });
     return true;
+  };
+});
+
+lopputiliApp.controller('InvoicesCtrl', function ($scope, Restangular) {
+  $scope.invoice_edit_show = false;
+  $scope.contacts_by_pk = [];
+  Restangular.all('contacts').getList().then(function (contacts) {
+    $scope.contacts = contacts;
+    contacts.forEach(function (contact) {
+      $scope.contacts_by_pk[contact.pk] = contact;
+    });
+  });
+  
+  $scope.selectInvoice = function (invoice) {
+    $scope.invoice = invoice;
+    $scope.invoice_edit_show = true;
+  };
+
+   $scope.removeInvoice = function remove_invoice (invoice) {
+    invoice.remove().then(function(){
+      $scope.invoices = _.without($scope.invoices, invoice);
+      alertify.success("Lasku poistettu!");
+    }, function(){
+      alertify.error("Laskua ei voitu poistaa!");
+    });
+  };
+
+  Restangular.all('invoices').getList().then(function (invoices) {
+    $scope.invoices = invoices;
+  });
+  $scope.invoice = {
+    created: new Date(),
+    payment_type: "14 vrk netto",
+    due_date: new Date(new Date().getTime() + 14*24*60*60*1000),
+    reclamation_time: 7,
+    penalty_interest: 7.5,
+    summ: 100.0,
+    status: "Odottaa"
+  };
+  $scope.saveInvoice = function (invoice) {
+    invoice.invoice_id = parseInt(invoice.invoice_id);
+    invoice.penalty_interest = parseFloat(invoice.penalty_interest);
+    invoice.reclamation_time = parseInt(invoice.reclamation_time);
+    invoice.contact = parseInt(invoice.contact);
+    Restangular.all('invoices').post(invoice).then(function (invoice) {
+      $scope.invoices.unshift(invoice);
+      alertify.success("Lasku tallennettu!");
+    }, function () {
+      alertify.error("Laskun tallentaminen epäonnistui");
+    });
+  };
+  $scope.toggleInvoiceEdit = function () {
+    $scope.invoice_edit_show = !$scope.invoice_edit_show;
   };
 });
