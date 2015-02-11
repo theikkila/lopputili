@@ -107,7 +107,26 @@ lopputiliApp.controller('ContactsCtrl', function ($scope, Restangular) {
 });
 
 lopputiliApp.controller('SettingsCtrl', function ($scope, Restangular) {
-   Restangular.all('accounts').getList().then(function (accounts) {
+  Restangular.all('accounts').getList().then(function (accounts) {
     $scope.accounts = accounts;
   });
+  $scope.addAccount = function add_account (form) {
+    form.aid = parseInt(form.aid);
+    Restangular.all('accounts').post(form).then(function(account){
+      $scope.accounts.push(account);
+      $scope.form = {};
+      alertify.success("Tili lisätty!");
+    }, function(error){
+      alertify.error("Tiliä ei voitu lisätä! ("+error.data.error+")");
+    });
+  };
+
+  $scope.removeAccount = function remove_account (account) {
+    account.remove().then(function(){
+      $scope.accounts = _.without($scope.accounts, account);
+      alertify.success("Tili poistettu!");
+    }, function(){
+      alertify.error("Tiliä ei voitu poistaa!");
+    });
+  };
 });
