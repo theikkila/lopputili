@@ -94,7 +94,7 @@ class APIDetailView(MethodView):
 		try:
 			obj = self.getModel().get(pk)
 			if obj.owner.pk != session['logged_in']:
-				raise ObjectNotFoundError
+				raise ObjectNotFoundError("Access denied")
 			resp = jsonify(obj.serialize())
 			obj.delete()
 			resp.status_code = 200
