@@ -11,10 +11,10 @@ Query = query.Query
 
 
 class ORM:
-	def __init__(self):
+	def __init__(self, dburi="sqlite://local.db"):
 		self.models = []
 		self.nmodels = {}
-		self.dburi = os.getenv('DATABASE_URL', "sqlite://local.db")
+		self.dburi = dburi
 		self.db = Database(self.dburi)
 
 	def registerModel(self, model):

@@ -20,7 +20,7 @@ import markdown2, datetime
 
 app = Flask(__name__)
 
-o = ORM()
+o = ORM(os.getenv('DATABASE_URL', "sqlite://local.db"))
 o.registerModel(Account)
 o.registerModel(User)
 o.registerModel(Receipt)

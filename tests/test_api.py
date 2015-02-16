@@ -123,6 +123,7 @@ class apiTest(unittest.TestCase):
 		self.assertEqual(r.status_code, 200)
 		shouldbe = {'data': [{
 			'pk': 1,
+			'owner': 1,
 			'name': "Testi Yhteystieto",
 			'address': None,
 			'zip_code': None,

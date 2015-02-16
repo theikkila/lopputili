@@ -32,7 +32,7 @@ class modelTest(unittest.TestCase):
 	def setUp(self):
 		if os.path.isfile(testDBpath):
 			os.remove(testDBpath)
-		self.o = ORM()
+		self.o = ORM(os.getenv('DATABASE_URL', "sqlite://local.db"))
 		if self.o.db.db == "postgres":
 			self.o.db.cursor.execute("drop schema public cascade")
 			self.o.db.cursor.execute("create schema public")
