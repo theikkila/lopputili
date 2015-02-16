@@ -168,6 +168,10 @@ Sovelluksen Angular-frontend sijaitsee `static/app`-hakemistossa josta se palvel
 
 Sovelluksen asetukset konfiguroidaan suurimmaksi osaksi ympäristömuuttujien avulla. Erillistä konfigurointitiedostoa ei ole, mutta osa käyttäjään vaikuttavista asetuksista tallennetaan tietokantaan.
 
+# Järjestelmän komponentit
+
+![Järjestelmän komponenttikaavio](https://raw.githubusercontent.com/theikkila/lopputili/master/doc/components.png)
+
 # Asennus
 
 Projektin asentaminen on helppoa esimerkiksi suoraan Herokuun tai heroku-yhteensopivaan järjestelmään (dokku). Asentaminen edellämainittuihin käy suorittamalla `git push <heroku>` kunhan palvelu on lisätty repoon remoteksi.
