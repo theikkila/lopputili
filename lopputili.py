@@ -48,7 +48,7 @@ def connectiontest():
 
 @app.route('/esittelysivu')
 def introduction():
-    return markdown2.markdown_path('doc/generated/documentation.md')
+    return markdown2.markdown_path('doc/generated/documentation.md', extras=["tables"])
 
 
 # Real routes

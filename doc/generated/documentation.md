@@ -142,8 +142,10 @@ Tositteeseen liittyvä tapahtuma
 
 # Relaatiotietokantakaavio
 
+![Relaatiotietokantakaavio](https://raw.githubusercontent.com/theikkila/lopputili/master/doc/reldiag.png)
 
-![Relaatiotietokantakaavio](https://raw.githubusercontent.com/theikkila/lopputili/master/doc/reldiag.png)# Järjestelmän yleisrakenne
+
+# Järjestelmän yleisrakenne
 
 
 Järjestelmä koostuu neljästä osasta. Kaikki tiedostot ovat kirjoitettu pienellä.
