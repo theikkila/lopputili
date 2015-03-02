@@ -17,10 +17,22 @@ class Invoice(model.Model):
 	due_date = fields.DateField()
 	reclamation_time = fields.IntegerField()
 	penalty_interest = fields.DecimalField()
-	summ = fields.DecimalField()
 	info1 = fields.CharField(max_length=200, blank=True)
 	info2 = fields.CharField(max_length=200, blank=True)
 	status = fields.CharField(max_length=40)
+	products = fields.HasField('Product', 'invoice')
 
 	def __repr__(self):
-		return self.title
+		return str(self.title)
+
+class Product(model.Model):
+	owner = fields.ForeignKeyField(User)
+	invoice = fields.ForeignKeyField(Invoice)
+	name = fields.CharField(max_length=200)
+	price = fields.IntegerField()
+	count = fields.IntegerField()
+	discount = fields.IntegerField()
+	vat = fields.IntegerField()
+
+	def __repr__(self):
+		return str(self.name)

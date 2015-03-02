@@ -1,1 +1,20 @@
-<h1>Dashboard!</h1>
+<h1>Lopputili</h1>
+<p class="lead">Lopputili on kirjanpito- ja laskutussovellus pienille yrityksille ja yhteisöille.</p>
+<div class="row-fluid">
+	<div class="col-md-3">
+		<div class="panel gray">
+			<div class="panel-body">
+				<h1><small>laskuja</small> {{invoices.length}} <small>kpl</small></h1>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-3">
+		<div class="panel gray">
+		<div class="panel-body">
+				<h1><small>Laskutettu yhteensä</small><br>{{stats.total}} <small>€</small></h1>
+			</div>
+		</div>
+	</div>
+
+</div>

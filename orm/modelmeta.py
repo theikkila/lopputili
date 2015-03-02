@@ -1,5 +1,6 @@
 from . import fields
 from . import descriptors
+import weakref
 import copy
 
 '''
@@ -10,7 +11,6 @@ In practice converts Models from nice declarative format into working ones.
 
 class ModelMeta(type):
 	def __new__(cls, name, based, attributes):
-		#print ("Metaclass called")
 		# Always add primary key field
 		if 'pk' not in attributes:
 			attributes['pk'] = fields.PKField()
@@ -44,11 +44,17 @@ are copied so the instances wouldn't be only references to each other.
 '''
 class BaseMetaModel(object, metaclass=ModelMeta):
 	def __init__(self, *args, **kwargs):
+		self._self = self
+		#super(BaseMetaModel, self).__init__()
 		for field in self.fields:
 			setattr(self, '_'+field, copy.deepcopy(getattr(self, '_'+field)))
 		for metafield in self.metafields:
 			setattr(self, '_'+metafield, copy.copy(getattr(self, '_'+metafield)))
 			f = getattr(self, '_'+metafield)
-			f.setModel(self)
+
+			self.setFieldModel(f)
+
+	def setFieldModel(self, f):
+		f.setModel(self)
 
 

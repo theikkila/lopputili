@@ -25,6 +25,7 @@
     "restangular": "~1.4.0",
     "angular-ui-router": "~0.2.13",
     "alertifyjs": "~0.3.16",
-    "angular-xeditable": "~0.1.8"
+    "angular-xeditable": "~0.1.8",
+    "angular-typeahead": "~0.2.2"
   }
 }

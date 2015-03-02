@@ -15,6 +15,7 @@ lopputiliApp.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
   .state('dashboard', {
     url: "/dashboard",
+    controller: 'DashboardCtrl',
     templateUrl: k+"dashboard.html",
   })
   .state('invoices', {
@@ -58,6 +59,17 @@ lopputiliApp.config(function(RestangularProvider) {
       id: "pk"
     });
   });
+
+
+lopputiliApp.controller('DashboardCtrl', function ($scope, Restangular) {
+  Restangular.all('invoices').getList().then(function (invoices) {
+    $scope.invoices = invoices;
+    $scope.stats = {total:0};
+    $scope.invoices.forEach(function(invoice){
+      $scope.stats.total += invoice.summ;
+    });
+  });
+});
 
 lopputiliApp.controller('ReceiptsCtrl', function ($scope, Restangular) {
   $scope.accounts_by_pk = [];
@@ -165,6 +177,7 @@ lopputiliApp.controller('SettingsCtrl', function ($scope, Restangular) {
 
 lopputiliApp.controller('InvoicesCtrl', function ($scope, Restangular) {
   $scope.invoice_edit_show = false;
+  $scope.invoices = [];
   $scope.contacts_by_pk = [];
   Restangular.all('contacts').getList().then(function (contacts) {
     $scope.contacts = contacts;
@@ -175,10 +188,16 @@ lopputiliApp.controller('InvoicesCtrl', function ($scope, Restangular) {
   
   $scope.selectInvoice = function (invoice) {
     $scope.invoice = invoice;
+    $scope.invoice.created = new Date(invoice.created);
+    $scope.invoice.due_date = new Date(invoice.due_date);
+    $scope.invoice.products = [];
+    invoice.all('products').getList().then(function (products) {
+      $scope.invoice.products = products;
+    });
     $scope.invoice_edit_show = true;
   };
 
-   $scope.removeInvoice = function remove_invoice (invoice) {
+   $scope.removeInvoice = function (invoice) {
     invoice.remove().then(function(){
       $scope.invoices = _.without($scope.invoices, invoice);
       alertify.success("Lasku poistettu!");
@@ -187,26 +206,47 @@ lopputiliApp.controller('InvoicesCtrl', function ($scope, Restangular) {
     });
   };
 
+  $scope.paidInvoice = function (invoice) {
+    invoice.status = "Maksettu";
+    invoice.save().then(function (invoice) {
+      alertify.success("Lasku "+invoice.title+" merkitty maksetuksi.");
+    }, function () {
+      alertify.error("Laskua ei voitu merkitä maksetuksi!");
+    });
+  }
+
   Restangular.all('invoices').getList().then(function (invoices) {
     $scope.invoices = invoices;
+    $scope.invoice.invoice_id = invoices.length+1;
   });
-  $scope.invoice = {
-    created: new Date(),
-    payment_type: "14 vrk netto",
-    due_date: new Date(new Date().getTime() + 14*24*60*60*1000),
-    reclamation_time: 7,
-    penalty_interest: 7.5,
-    summ: 100.0,
-    status: "Odottaa"
-  };
+  $scope.invoice = blankInvoice();
   $scope.saveInvoice = function (invoice) {
     invoice.invoice_id = parseInt(invoice.invoice_id);
     invoice.penalty_interest = parseFloat(invoice.penalty_interest);
     invoice.reclamation_time = parseInt(invoice.reclamation_time);
     invoice.contact = parseInt(invoice.contact);
-    Restangular.all('invoices').post(invoice).then(function (invoice) {
-      $scope.invoices.unshift(invoice);
+    invoice.products = invoice.products.map(function (product) {
+      product.price = parseFloat(product.price);
+      return product;
+    });
+    //delete invoice.products;
+    var iv = Restangular.restangularizeElement(null, invoice, 'invoices');
+    iv.fromServer = (iv.pk != undefined);
+    iv.save().then(function (invoice) {
+      $scope.invoice.products.forEach(function (product) {
+        product.invoice = invoice.pk;
+        var p = Restangular.restangularizeElement(null, product, 'products');
+        p.fromServer = (p.pk != undefined);
+        p.save().then(function (product) {
+          alertify.success("Tuote "+product.name+" tallennettu!");
+        });
+      });
+      if(!iv.fromServer){
+        $scope.invoices.unshift(invoice);
+      }
+      $scope.invoice = blankInvoice();
       alertify.success("Lasku tallennettu!");
+
     }, function () {
       alertify.error("Laskun tallentaminen epäonnistui");
     });
@@ -214,4 +254,57 @@ lopputiliApp.controller('InvoicesCtrl', function ($scope, Restangular) {
   $scope.toggleInvoiceEdit = function () {
     $scope.invoice_edit_show = !$scope.invoice_edit_show;
   };
+  $scope.addProduct = function () {
+    $scope.invoice.products.push(blankProduct($scope.invoice.pk));
+  };
+  $scope.removeProduct = function (product) {
+    if(product.pk) {
+      Restangular.one('products', product.pk).remove().then(function () {
+        $scope.invoice.products = _.without($scope.invoice.products, product);
+        alertify.success("Tuoterivi poistettu!");
+      });
+    } else {
+        $scope.invoice.products = _.without($scope.invoice.products, product);
+        alertify.success("Tuoterivi poistettu!");
+    }
+  }
+  function blankProduct (invid) {
+    return {
+      invoice: invid,
+      name: "Tuote",
+      price: 0,
+      count: 1,
+      discount: 0,
+      vat: 24
+    };
+  }
+  $scope.totals = function () {
+    return $scope.invoice.products.map(function (product) {
+      var discount = product.discount/100;
+      var line_brutto = product.price*product.count;
+      var discount_value = line_brutto*discount;
+      var line_after_discount = line_brutto-discount_value;
+      var vat_percent = product.vat / 100;
+      var taxes = line_after_discount * vat_percent;
+      var total = line_after_discount + taxes;
+      return {taxes: taxes, brutto_total: total, netto_total: line_after_discount};
+    }).reduce(function(cumulative, line){
+      cumulative.taxes += line.taxes;
+      cumulative.brutto_total += line.brutto_total;
+      cumulative.netto_total += line.netto_total;
+      return cumulative;
+    }, {taxes: 0, brutto_total: 0, netto_total: 0});
+  }
+  function blankInvoice(){
+    return {
+      invoice_id: $scope.invoices.length+1,
+      created: new Date(),
+      payment_type: "14 vrk netto",
+      due_date: new Date(new Date().getTime() + 14*24*60*60*1000),
+      reclamation_time: 7,
+      penalty_interest: 7.5,
+      status: "Odottaa",
+      products: []
+    }
+  }
 });

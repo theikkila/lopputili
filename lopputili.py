@@ -6,12 +6,12 @@ from app.models.account import Account
 from app.models.user import User
 from app.models.contact import Contact
 from app.models.receipt import Receipt, Commit
-from app.models.invoice import Invoice
+from app.models.invoice import Invoice, Product
 from app.models.setting import Setting
 from app.controllers.receipts import ReceiptsListController, ReceiptsDetailController, CommitsListController, CommitsDetailController
 from app.controllers.accounts import AccountsListController, AccountsDetailController
 from app.controllers.contacts import ContactsListController, ContactsDetailController
-from app.controllers.invoices import InvoicesListController, InvoicesDetailController
+from app.controllers.invoices import InvoicesListController, InvoicesDetailController, ProductsListController, ProductsDetailController, InvoiceGeneratorController
 from app.controllers.settings import SettingsController
 from app.controllers.login import LoginController, logout, login_required
 
@@ -27,6 +27,7 @@ o.registerModel(Receipt)
 o.registerModel(Commit)
 o.registerModel(Contact)
 o.registerModel(Invoice)
+o.registerModel(Product)
 o.registerModel(Setting)
 o.initTables()
 
@@ -61,13 +62,14 @@ app.add_url_rule('/login', view_func=LoginController.as_view('login'))
 app.add_url_rule('/logout', 'logout', logout)
 app.add_url_rule('/', 'dashboard', login_required(dashboard))
 app.add_url_rule('/api/settings', view_func=SettingsController.as_view('settings'))
-
+app.add_url_rule('/api/invoices/<pk>/generate', view_func=InvoiceGeneratorController.as_view('invoice_generator'))
 
 FullRESTendpoint(app, 'receipts', ReceiptsListController, ReceiptsDetailController)
 FullRESTendpoint(app, 'commits', CommitsListController, CommitsDetailController)
 FullRESTendpoint(app, 'accounts', AccountsListController, AccountsDetailController)
 FullRESTendpoint(app, 'contacts', ContactsListController, ContactsDetailController)
 FullRESTendpoint(app, 'invoices', InvoicesListController, InvoicesDetailController)
+FullRESTendpoint(app, 'products', ProductsListController, ProductsDetailController)
 
 app.secret_key = os.getenv('SECRET_KEY', 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT')
 

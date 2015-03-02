@@ -16,6 +16,52 @@
 
 <!-- Text input-->
 <div class="form-group">
+  <label class="col-md-2 control-label" for="address">Postiosoite</label>  
+  <div class="col-md-10">
+  <input id="address" name="address" ng-model="settings.address" type="text" placeholder="Yritystie 1" class="form-control input-md">
+  <span class="help-block">Yrityksen tai yhteisön postiosoite</span>  
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label" for="zip_code">Postinumero</label>  
+  <div class="col-md-10">
+  <input id="zip_code" name="zip_code" ng-model="settings.zip_code" type="text" placeholder="05540" class="form-control input-md">
+  <span class="help-block">Yrityksen tai yhteisön postinumero</span>  
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label" for="city">Postitoimipaikka</label>  
+  <div class="col-md-10">
+  <input id="city" name="city" ng-model="settings.city" type="text" placeholder="Espoo" class="form-control input-md">
+  <span class="help-block">Yrityksen tai yhteisön postitoimipaikka</span>
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label" for="email">Sähköpostiosoite</label>  
+  <div class="col-md-10">
+  <input id="email" name="email" ng-model="settings.email" type="text" placeholder="yritys@yritys.fi" class="form-control input-md">
+  <span class="help-block">Yrityksen tai yhteisön sähköpostiosoite</span>
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-2 control-label" for="phone">Puhelinnumero</label>  
+  <div class="col-md-10">
+  <input id="phone" name="phone" ng-model="settings.phone" type="text" placeholder="04000404040" class="form-control input-md">
+  <span class="help-block">Yrityksen tai yhteisön puhelinnumero</span>
+  </div>
+</div>
+
+
+<!-- Text input-->
+<div class="form-group">
   <label class="col-md-2 control-label" for="vatcode">Y-tunnus</label>  
   <div class="col-md-10">
   <input id="vatcode" name="vatcode" ng-model="settings.vat_code" type="text" placeholder="232323-1" class="form-control input-md">

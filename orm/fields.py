@@ -63,6 +63,16 @@ class HasField(MetaField):
 		kw[self.meta['field']+'__exact'] = self.meta['instance'].pk
 		return self.meta['model'].filter(**kw)
 
+	def deserialize(self, oblist):
+		return
+		# Todo: fix this
+		inst = self.meta['instance']
+		for obj in oblist:
+			obj[self.meta['field']] = inst.pk
+			obj['owner'] = inst.owner
+			m = self.meta['model'].deserialize(obj)
+			m.save()
+
 
 class PKField(Field):
 	name = "PrimaryKey"

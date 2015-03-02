@@ -123,3 +123,11 @@
         margin-right: 0;
     }
 }
+
+.gray {
+    background-color: #F0F0F0;
+}
+
+.panel {
+    text-align: center;
+}
