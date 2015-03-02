@@ -2,19 +2,35 @@
 	<div class="col-md-12">
 		<h1>Kirjanpito</h1>
 		<p class="lead">Tässä näkymässä voit tarkastella, muokata, lisätä tai poistaa tositteitasi</p>
+    <button class="btn btn-success" ng-click="addReceipt()">Lisää tosite</button>
     <div ng-show="selected">
-    <h3>{{selected.rid}} <small>{{selected.commit_date}}</small></h3>
-    <p>{{selected.description}}</p>
+      <h3>{{selected.rid}} <small>{{selected.commit_date |date: 'd.M.y'}}<input type="date" ng-model="selected.commit_date" placeholder="pvm" class="form-control" ng-change="updateReceipt(selected)"></small></h3>
+      <p editable-text="selected.description" onaftersave="updateReceipt(selected)">{{selected.description || "Ei kuvausta"}}</p>
       <table class="table table-condensed">
         <thead>
-        <tr><th>Credit</th><th>Debet</th><th>Tili</th></tr>
+          <tr><th>Credit</th><th>Debet</th><th colspan="2">Tili</th></tr>
         </thead>
         <tbody>
-        <tr ng-repeat="commit in commits">
-          <td>{{commit.credit_amount}}</td><td>{{commit.debet_amount}}</td><td>{{accounts_by_pk[commit.account].name}}</td>
-        </tr>
-        <tr ng-show="!commits.length"><td>Credet</td><td>Debet</td><td>Tili</td></tr>
+          <tr ng-repeat="commit in commits">
+            <td><span editable-text="commit.credit_amount" onaftersave="saveCommit(commit)">{{commit.credit_amount || "0"}}</span></td>
+            <td><span editable-text="commit.debet_amount" onaftersave="saveCommit(commit)">{{commit.debet_amount || "0"}}</span></td>
+            <td>
+            <select ng-model="commit.account" ng-change="saveCommit(commit)" placeholder="Tili" class="form-control input-md">
+                <option ng-repeat="account in accounts" value="{{account.pk}}">{{account.name}}</option>
+              </select>
+            </td>
+          </tr>
+          <tr ng-show="!commits.length"><td>Credet</td><td>Debet</td><td>Tili</td></tr>
         </tbody>
+        <tfooter>
+          <tr>
+          <td>{{totals().credit}}</td>
+          <td>{{totals().debet}}</td>
+            <td>
+              <button class="btn btn-success" ng-click="addCommit()">Lisää</button>
+            </td>
+          </tr>
+        </tfooter>
       </table>
     </div>
     <table class="table table-striped">
@@ -26,9 +42,9 @@
         </tr>
       </thead>
       <tbody>
-          <tr ng-repeat="receipt in receipts">
-          <td><button class="btn btn-xs" ng-click="editReceipt(receipt)">{{receipt.rid}}</button></td>
-          <td>{{receipt.commit_date}}</td>
+        <tr ng-repeat="receipt in receipts">
+          <td><button class="btn btn-xs" ng-click="editReceipt(receipt)">{{receipt.rid}}</button> <button class="btn btn-xs btn-danger" ng-click="removeReceipt(receipt)">P</button></td>
+          <td>{{receipt.commit_date | date: 'd.M.y'}}</td>
           <td>{{receipt.description}}</td>
         </tr>
       </tbody>

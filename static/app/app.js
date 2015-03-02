@@ -42,6 +42,7 @@ lopputiliApp.config(function($stateProvider, $urlRouterProvider) {
 
 lopputiliApp.config(function(RestangularProvider) {
   RestangularProvider.setBaseUrl('/api');
+  RestangularProvider.setParentless(true);
     // add a response intereceptor
     RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
       var extractedData;
@@ -64,23 +65,74 @@ lopputiliApp.config(function(RestangularProvider) {
 lopputiliApp.controller('DashboardCtrl', function ($scope, Restangular) {
   Restangular.all('invoices').getList().then(function (invoices) {
     $scope.invoices = invoices;
-    $scope.stats = {total:0};
-    $scope.invoices.forEach(function(invoice){
-      $scope.stats.total += invoice.summ;
+    $scope.paid = invoices.filter(function (invoice) {
+      return invoice.status == "Maksettu";
     });
+  });
+  Restangular.all('contacts').getList().then(function (contacts) {
+    $scope.contacts = contacts;
   });
 });
 
 lopputiliApp.controller('ReceiptsCtrl', function ($scope, Restangular) {
   $scope.accounts_by_pk = [];
+  $scope.commits = [];
   Restangular.all('accounts').getList().then(function (accounts) {
     $scope.accounts = accounts;
     accounts.forEach(function(account){
       $scope.accounts_by_pk[account.pk] = account;
     });
   });
+  $scope.totals = function () {
+    return $scope.commits.reduce(function(cumulative, current) {
+      cumulative.debet += current.debet_amount;
+      cumulative.credit += current.credit_amount;
+      return cumulative;
+    }, {debet:0, credit:0});
+  }
+  $scope.saveCommit = function (commit) {
+    commit.debet_amount = parseFloat(commit.debet_amount);
+    commit.credit_amount = parseFloat(commit.credit_amount);
+    commit.save().then(function () {
+      alertify.success("Tapahtuma tallennettu!");
+    });
+  }
+  $scope.removeCommit = function (commit) {
+    commit.remove().then(function () {
+      alertify.success("Tapahtuma poistettu!");
+      $scope.commits = _.without($scope.commits, commit);
+    });
+  };
+  $scope.removeReceipt = function (receipt) {
+    receipt.remove().then(function () {
+      alertify.success("Tosite poistettu!");
+      $scope.receipts = _.without($scope.receipts, receipt);
+    });
+  };
+  $scope.addCommit = function add_commit () {
+    var c = {receipt: $scope.selected.pk, credit_amount:0, debet_amount:0, account: 1};
+    Restangular.all('commits').post(c).then(function (commit) {
+      $scope.commits.push(commit);
+      alertify.success("Tapahtuma lisätty!");
+    });
+  };
+  $scope.addReceipt = function add_receipt () {
+    var r = {rid:$scope.receipts.length+1, commit_date: new Date()};
+    Restangular.all('receipts').post(r)
+    .then(function (receipt) {
+      $scope.receipts.unshift(receipt);
+    });
+  };
+  $scope.updateReceipt = function update_receipt (receipt) {
+      receipt.save().then(function (receipt) {
+        alertify.success("Tosite tallennettu!");
+      });
+  };
   Restangular.all('receipts').getList().then(function (receipts) {
-    $scope.receipts = receipts;
+    $scope.receipts = receipts.map(function (receipt) {
+      receipt.commit_date = new Date(receipt.commit_date);
+      return receipt;
+    });
   });
   $scope.editReceipt = function edit_receipt (receipt) {
     $scope.selected = receipt;
