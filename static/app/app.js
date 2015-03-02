@@ -93,8 +93,11 @@ lopputiliApp.controller('ReceiptsCtrl', function ($scope, Restangular) {
   $scope.saveCommit = function (commit) {
     commit.debet_amount = parseFloat(commit.debet_amount);
     commit.credit_amount = parseFloat(commit.credit_amount);
+    var account = commit.account;
+    commit.account = commit.account.pk
     commit.parentResource = null;
     commit.save().then(function () {
+      commit.account = account;
       alertify.success("Tapahtuma tallennettu!");
     });
   }
@@ -138,7 +141,13 @@ lopputiliApp.controller('ReceiptsCtrl', function ($scope, Restangular) {
   $scope.editReceipt = function edit_receipt (receipt) {
     $scope.selected = receipt;
     receipt.all('commits').getList().then(function (commits) {
-      $scope.commits = commits;
+      $scope.commits = commits.map(function (commit) {
+        var p = commit.account;
+        //console.log(p);
+        commit.account = _.find($scope.accounts, {pk:p});
+        //console.log(commit);
+        return commit;
+      });
     });
   };
 });

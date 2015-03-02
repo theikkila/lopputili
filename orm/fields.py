@@ -87,7 +87,10 @@ class DateTimeField(Field):
 		if isinstance(value, datetime):
 			self.value = value
 		else:
-			self.value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%fZ')
+			try:
+				self.value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%fZ')
+			except ValueError:
+				self.value = datetime()
 
 	def serialize(self):
 		return self.value.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -95,6 +98,12 @@ class DateTimeField(Field):
 	def isvalid(self):
 		if not super(DateTimeField, self).isvalid():
 			return False
+		try:
+			v = datetime.strptime(self.value, '%Y-%m-%dT%H:%M:%S.%fZ')
+		except ValueError:
+			return False
+		except TypeError:
+			pass
 		return isinstance(self.value, datetime)
 
 class DateField(Field):

@@ -15,8 +15,7 @@
             <td><span editable-text="commit.credit_amount" onaftersave="saveCommit(commit)">{{commit.credit_amount || "0"}}</span></td>
             <td><span editable-text="commit.debet_amount" onaftersave="saveCommit(commit)">{{commit.debet_amount || "0"}}</span></td>
             <td>
-            <select ng-model="commit.account" ng-change="saveCommit(commit)" placeholder="Tili" class="form-control input-md">
-                <option ng-repeat="account in accounts" value="{{account.pk}}">{{account.name}}</option>
+            <select ng-model="commit.account" ng-change="saveCommit(commit)" placeholder="Tili" class="form-control input-md" ng-options="account as account.name for account in accounts"
               </select>
             </td>
           </tr>
