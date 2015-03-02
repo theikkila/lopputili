@@ -42,7 +42,7 @@ lopputiliApp.config(function($stateProvider, $urlRouterProvider) {
 
 lopputiliApp.config(function(RestangularProvider) {
   RestangularProvider.setBaseUrl('/api');
-  RestangularProvider.setParentless(true);
+  //RestangularProvider.setParentless(true);
     // add a response intereceptor
     RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
       var extractedData;
@@ -93,6 +93,7 @@ lopputiliApp.controller('ReceiptsCtrl', function ($scope, Restangular) {
   $scope.saveCommit = function (commit) {
     commit.debet_amount = parseFloat(commit.debet_amount);
     commit.credit_amount = parseFloat(commit.credit_amount);
+    commit.parentResource = null;
     commit.save().then(function () {
       alertify.success("Tapahtuma tallennettu!");
     });
