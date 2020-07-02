@@ -5,6 +5,7 @@ import urllib.parse
 import sqlite3
 import psycopg2
 import psycopg2.extras
+import threading
 
 urllib.parse.uses_netloc.append("postgres")
 urllib.parse.uses_netloc.append("sqlite")
@@ -77,6 +78,7 @@ class Database:
 
 		print(q, raw_params)
 		params = self.parse_params(raw_params)
+
 		if params:
 			res = self.cursor.execute(q, params)
 		else:
@@ -84,6 +86,7 @@ class Database:
 		if commit:
 			self.conn.commit()
 		iterator = return_iterator(res, self.cursor)
+
 		return iterator
 
 	def parse_params(self, params):
